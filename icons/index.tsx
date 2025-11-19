@@ -812,3 +812,30 @@ export const CheckIcon = ({ className, color }: any) => {
     </svg>
   );
 };
+export const GroupIcon = ({ className, color }: any) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="22"
+      height="20"
+      viewBox="0 0 22 20"
+      fill="none"
+      className={className}
+    >
+      <path
+        d="M14 1L8.5 1.01053V6.01055H1V13.0105H9.49975"
+        stroke={color}
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M9 18.0105L14.5 17.9999V12.7999H21V6.0105H14.1724"
+        stroke={color}
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  );
+};
