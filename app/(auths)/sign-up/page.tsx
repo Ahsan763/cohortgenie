@@ -32,7 +32,7 @@ export default function LoginPage() {
       </div>
       <div className="w-[54%] mx-auto flex flex-col justify-between px-[4vw]">
         <div className="w-full max-w-[385px] pt-[7.6vh] mx-auto">
-          <Image src="/images/logo.svg" width={193} height={36} alt="CohortGenie" className="h-9 w-auto mb-[5.5vh] mx-auto" />
+          <Image src="/images/Logo.svg" width={193} height={36} alt="CohortGenie" className="h-9 w-auto mb-[5.5vh] mx-auto" />
           <h2 className="text-center text-2xl font-semibold mb-[3vh] text-primary-text">Welcome to Cohort Genie!</h2>
           {/* <p className="text-center text-secondary-text mb-[4.3vh]">
             Sign in to access your analytics

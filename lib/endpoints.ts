@@ -1,4 +1,4 @@
-const BASE_URL: string = "http://127.0.0.1:8001/be/";
+const BASE_URL: string = "http://localhost:5000/be";
 
 interface Endpoints {
   [key: string]: string;

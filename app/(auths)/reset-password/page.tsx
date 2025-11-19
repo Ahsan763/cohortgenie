@@ -38,7 +38,7 @@ export default function ResetPasswordPage() {
       </div>
       <div className="w-[54%] mx-auto flex flex-col justify-center px-[4vw] relative">
         <div className="w-full max-w-[385px] mx-auto">
-          <Image src="/images/logo.svg" width={193} height={36} alt="CohortGenie" className="h-9 w-auto mb-[5.5vh] mx-auto" />
+          <Image src="/images/Logo.svg" width={193} height={36} alt="CohortGenie" className="h-9 w-auto mb-[5.5vh] mx-auto" />
           <h2 className="text-center text-2xl font-semibold text-primary-text mb-[1.5vh]">Reset Password?</h2>
           <p className="text-center text-secondary-text mb-[4.3vh]">
             Add your email to send recovery instructions

@@ -53,21 +53,20 @@ export const useLogin = () => {
       const { status, data } = result;
       console.log("🚀 ~ handleLogin ~ data:", data)
       if (status === 200) {
-        localStorage.setItem("role", data.data?.role);
-        if (data?.loginExpired === true) {
-          router.push(`/login?method=2fa`);
-        }
-        else if (data?.loginExpired === false) {
+        // if (data?.loginExpired === true) {
+        //   router.push(`/login?method=2fa`);
+        // }
+        // if (data?.loginExpired === false) {
           toast.success("Login successful");
-          setCookies("token", data.data.token);
-          setCookies("role", data.data?.role);
+          setCookies("token", data.token);
           dispatch(loginn(data.user));
-          if (data?.role === "admin") {
-            router.push(`/admin/dashboard/`);
-          } else {
-            router.push(`/dashboard/home/`);
-          }
-        }
+          // if (data?.role === "admin") {
+          //   router.push(`/admin/dashboard/`);
+          // } else {
+          //   router.push(`/dashboard/home/`);
+          // }
+          router.push(`/dashboard/home/`);
+        // }
         // console.log(data?.data?.token);
         // router.push(`/${data?.data?.role}/dashboard`);
       } else {
