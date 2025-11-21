@@ -1,7 +1,15 @@
 // import { ApiResponseType, AuthRequestParams, ErrorData, SessionData } from "@/utils/models/auth.model";
 import axios, { AxiosResponse, AxiosError } from "axios";
-import { ApiResponseType, AuthRequestParams, ErrorData, SessionData } from "./utils/models/auth.model";
+import {
+  ApiResponseType,
+  AuthRequestParams,
+  ErrorData,
+  SessionData,
+} from "./utils/models/auth.model";
 const baseURL = process.env.NEXT_PUBLIC_APP_URL;
+import { parseCookies } from "nookies";
+const cookies = parseCookies();
+const token = cookies.token;
 const axiosClient = axios.create({
   baseURL: `${baseURL}`,
 });
@@ -27,7 +35,7 @@ export const authRequestFormData = async <T, D = unknown>({
       data,
     })
       .then((res: AxiosResponse<T>) => {
-        resolve(res as any)
+        resolve(res as any);
       })
       .catch((err: AxiosError<ErrorData>) => {
         // console.log(err)
@@ -47,7 +55,6 @@ export const authRequestFormData = async <T, D = unknown>({
   });
 };
 
-
 export const authRequest = async <T, D = unknown>({
   url,
   method = "GET",
@@ -62,7 +69,7 @@ export const authRequest = async <T, D = unknown>({
     axiosClient({
       method,
       headers: {
-        Authorization: `Bearer ${session?.token}`,
+        Authorization: `Bearer ${token}`,
         ...headers,
       },
       url,
@@ -70,7 +77,7 @@ export const authRequest = async <T, D = unknown>({
     })
       .then((res: AxiosResponse<T>) => {
         // console.log(res)
-        resolve(res as any)
+        resolve(res as any);
       })
       .catch((err: AxiosError<ErrorData>) => {
         // console.log(err)
@@ -105,7 +112,7 @@ export const publicRequest = async <T, D = unknown>({
       data,
     })
       .then((res: any) => {
-        console.log(res)
+        console.log(res);
         resolve(res as any);
       })
       .catch((err: AxiosError<ErrorData>) => {

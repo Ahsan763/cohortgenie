@@ -1,7 +1,14 @@
 // SyncingPage.tsx
 
 import { Card, CardContent } from "@/components/ui/card";
-import { GroupIcon } from "@/icons";
+import { Progress } from "@/components/ui/progress";
+import {
+  ChartIcon,
+  CheckFillIcon,
+  DatabaseIcon,
+  GroupIcon,
+  LockIcon,
+} from "@/icons";
 // import { Progress } from "@/components/ui/progress";
 import { Check, Lock, Database, BarChart3, Loader2 } from "lucide-react";
 import Image from "next/image";
@@ -12,19 +19,19 @@ const syncSteps = [
     id: 1,
     title: "Connect to QuickBooks",
     status: "completed",
-    icon: Lock,
+    icon: LockIcon,
   },
   {
     id: 2,
     title: "Fetching transaction data",
     status: "completed",
-    icon: Database,
+    icon: DatabaseIcon,
   },
   {
     id: 3,
     title: "Analyzing retention metrics",
     status: "in-progress",
-    icon: BarChart3,
+    icon: ChartIcon,
   },
 ];
 
@@ -39,21 +46,18 @@ const SyncStep = ({ title, status, Icon }: SyncStepProps) => {
   const isCompleted = status === "completed";
   const isInProgress = status === "in-progress";
 
-  // Tailwind classes for styling based on status
   const baseClasses =
-    "flex items-center justify-between p-4 rounded-lg my-3 border transition-colors duration-300";
+    "flex items-center justify-between p-4 rounded-lg border transition-colors duration-300";
   let statusClasses = "";
   let iconColor = "";
 
   if (isCompleted) {
-    statusClasses = "bg-green-50 border-green-300";
-    iconColor = "text-green-600";
+    statusClasses = "bg-[#F0FDF4] border-[#9DDFB7]";
+    iconColor = "#009A3E";
   } else if (isInProgress) {
-    statusClasses =
-      "bg-purple-50 border-purple-400 shadow-lg shadow-purple-100/50";
-    iconColor = "text-purple-600";
+    statusClasses = "border-[#9B6EEE]";
+    iconColor = "#9B6EEE";
   } else {
-    // pending (not shown in this specific design, but good for completeness)
     statusClasses = "bg-gray-50 border-gray-300 opacity-70";
     iconColor = "text-gray-500";
   }
@@ -61,21 +65,19 @@ const SyncStep = ({ title, status, Icon }: SyncStepProps) => {
   return (
     <div className={`${baseClasses} ${statusClasses}`}>
       <div className="flex items-center space-x-3">
-        <Icon className={`h-5 w-5 ${iconColor}`} />
+        <Icon color={`${iconColor}`} />
         <span
-          className={`font-medium ${isInProgress ? "text-purple-700" : "text-gray-700"}`}
+          className={`font-medium text-sm ${isInProgress ? "text-[#9B6EEE]" : "text-[#009A3E]"}`}
         >
           {title}
         </span>
       </div>
 
-      {/* Right side status indicator */}
       {isCompleted ? (
-        <Check className="h-5 w-5 text-green-600" />
+        <CheckFillIcon color="#009A3E" />
       ) : isInProgress ? (
-        <Loader2 className="h-5 w-5 text-purple-600 animate-spin" /> // Used for the "..." effect visually
+        <Loader2 className="h-5 w-5 text-purple-600 animate-spin" />
       ) : (
-        // Placeholder for pending state if needed
         <span className="text-gray-400"></span>
       )}
     </div>
@@ -83,10 +85,10 @@ const SyncStep = ({ title, status, Icon }: SyncStepProps) => {
 };
 
 export default function InteStep2() {
-  const progressValue = 90; // The value from the image
+  const progressValue = 90;
 
   return (
-    <div className="flex flex-col items-center p-8 bg-white min-h-screen">
+    <>
       <div className="flex flex-col items-center mb-10">
         <div className="flex items-center space-x-2 text-2xl text-primary-text font-semibold mb-6">
           <GroupIcon color="#9B6EEE" />
@@ -97,8 +99,8 @@ export default function InteStep2() {
         </p>
       </div>
 
-      <Card className="w-full max-w-2xl shadow-xl border-gray-100/50 p-6">
-        <CardContent className="flex flex-col items-center p-0">
+      <Card className="w-full">
+        <CardContent className="flex flex-col items-center px-16 py-4">
           <div className="bg-[#9B6EEE33] flex items-center rounded-full justify-center border-2 border-white w-20 h-20 outline-4 outline-[#9B6EEE33] mb-6">
             <div className="bg-[#283E6D] w-16 h-16 flex items-center justify-center rounded-full">
               <Image
@@ -119,15 +121,13 @@ export default function InteStep2() {
                 <Loader2 className="h-4 w-4 text-gray-400 ml-1 animate-spin" />
               </span>
             </div>
-            {/* Custom progress bar appearance */}
-            {/* <Progress 
-              value={progressValue} 
-              className="h-2 [&>div]:bg-purple-500" // Override shadcn default to use purple
-            /> */}
+            <Progress
+              value={progressValue}
+              className="h-2 [&>div]:bg-[#9B6EEE]"
+            />
           </div>
 
-          {/* Status Steps */}
-          <div className="w-full">
+          <div className="w-full space-y-6 mb-8">
             {syncSteps.map((step) => (
               <SyncStep
                 key={step.id}
@@ -138,18 +138,19 @@ export default function InteStep2() {
             ))}
           </div>
 
-          <p className="text-sm text-gray-500 mt-6 text-center">
+          <p className="text-sm text-secondary-text text-center">
             This may take a few moments. Your Dashboard will load automatically
             when ready.
           </p>
         </CardContent>
       </Card>
 
-      {/* Security Footer */}
-      <div className="mt-10 flex items-center space-x-2 text-sm text-gray-600">
-        <Lock className="h-4 w-4 text-purple-600" />
-        <span>Your data is encrypted and processed securely</span>
+      <div className="mt-10 flex items-center justify-center font-medium gap-x-4 text-sm text-secondary-text">
+        <div className="w-8 h-8 flex items-center justify-center rounded-full bg-[#9B6EEE1A]">
+          <Lock className="h-4 w-4 text-purple-600" />
+        </div>
+        <span className="text-sm">Your data is encrypted and processed securely</span>
       </div>
-    </div>
+    </>
   );
 }

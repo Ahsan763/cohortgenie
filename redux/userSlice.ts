@@ -54,43 +54,11 @@ export const userSlice = createSlice({
     },
     logout: (state) => {
       state.user = null;
-      ["user", "role", "permissions"].forEach(removeLocalStorageItem);
+      ["user"].forEach(removeLocalStorageItem);
     },
-    updateUser: (state, action: PayloadAction<Partial<User>>) => {
-      if (state.user) {
-        state.user = { ...state.user, ...action.payload };
-        setLocalStorageItem("user", state.user);
-      }
-    },
-    storeNotifications: (state, action: PayloadAction<any[]>) => {
-      if (state.user) {
-        state.user.notifications = action.payload;
-        setLocalStorageItem("notifications", action.payload);
-      }
-    },
-    updateNotifications: (state, action: PayloadAction<any[]>) => {
-      if (state.user) {
-        state.user.notifications = action.payload;
-        setLocalStorageItem("notifications", action.payload);
-      }
-    },
-
-    // setPermissions: (state, action: PayloadAction<any>) => {
-    //   console.log(action.payload)
-    //   // state.permissions = action.payload;
-    //   // setLocalStorageItem("permissions", action.payload);
-    // },
   },
 });
 
-export const {
-  loginn,
-  signup,
-  logout,
-  updateUser,
-  storeNotifications,
-  updateNotifications,
-  // setPermissions,
-} = userSlice.actions;
+export const { loginn, signup, logout } = userSlice.actions;
 
 export default userSlice.reducer;

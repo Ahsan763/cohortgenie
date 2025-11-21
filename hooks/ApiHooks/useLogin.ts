@@ -1,14 +1,17 @@
-"use client"
+"use client";
 import { useState } from "react";
 import { getCookies, removeCookies, setCookies } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
-import { ForgotPasswordd, login, ResetPasswordd, SignUp, TwoFACode, VerifyCode } from "@/services/auth/auth";
 import {
-  loginn,
-  logout,
-  signup,
-} from "@/redux/userSlice";
+  ForgotPasswordd,
+  login,
+  ResetPasswordd,
+  SignUp,
+  TwoFACode,
+  VerifyCode,
+} from "@/services/auth/auth";
+import { loginn, logout, signup } from "@/redux/userSlice";
 import toast from "react-hot-toast";
 
 export const useLogin = () => {
@@ -25,17 +28,19 @@ export const useLogin = () => {
       }
       const { status, data } = result;
       if (status === 201) {
-        console.log("saaaaaaa",data.token,data.user);
+        console.log("saaaaaaa", data.token, data.user);
         toast.success("Signup successful");
         setCookies("token", data.token);
         dispatch(signup(data.user));
-        router.push(`/dashboard/home/`);
+        router.push(`/integration?step=1`);
       } else {
         toast.error("Login failed: API returned error");
       }
     } catch (error: any) {
       console.log(error);
-      toast.error(error?.data?.error || "Login error: Unexpected error occurred");
+      toast.error(
+        error?.data?.error || "Login error: Unexpected error occurred"
+      );
       setLoading(false);
     } finally {
       setLoading(false);
@@ -51,21 +56,21 @@ export const useLogin = () => {
         return;
       }
       const { status, data } = result;
-      console.log("🚀 ~ handleLogin ~ data:", data)
+      console.log("🚀 ~ handleLogin ~ data:", data);
       if (status === 200) {
         // if (data?.loginExpired === true) {
         //   router.push(`/login?method=2fa`);
         // }
         // if (data?.loginExpired === false) {
-          toast.success("Login successful");
-          setCookies("token", data.token);
-          dispatch(loginn(data.user));
-          // if (data?.role === "admin") {
-          //   router.push(`/admin/dashboard/`);
-          // } else {
-          //   router.push(`/dashboard/home/`);
-          // }
-          router.push(`/dashboard/home/`);
+        toast.success("Login successful");
+        setCookies("token", data.token);
+        dispatch(loginn(data.user));
+        // if (data?.role === "admin") {
+        //   router.push(`/admin/dashboard/`);
+        // } else {
+        //   router.push(`/dashboard/home/`);
+        // }
+        router.push(`/dashboard/home/`);
         // }
         // console.log(data?.data?.token);
         // router.push(`/${data?.data?.role}/dashboard`);
@@ -74,7 +79,9 @@ export const useLogin = () => {
       }
     } catch (error: any) {
       console.log(error);
-      toast.error(error?.data?.error || "Login error: Unexpected error occurred");
+      toast.error(
+        error?.data?.error || "Login error: Unexpected error occurred"
+      );
       setLoading(false);
     } finally {
       setLoading(false);
@@ -106,13 +113,12 @@ export const useLogin = () => {
         return;
       }
       const { status, data } = result;
-      console.log("🚀 ~ Varify2FA ~ data:", data)
+      console.log("🚀 ~ Varify2FA ~ data:", data);
       if (status === 200) {
         localStorage.setItem("role", data.data?.role);
         if (data?.loginExpired === true) {
           router.push(`/2fa`);
-        }
-        else if (data?.loginExpired === false) {
+        } else if (data?.loginExpired === false) {
           toast.success("Login successful");
           setCookies("token", data.data.token);
           setCookies("role", data.data?.role);
@@ -130,13 +136,18 @@ export const useLogin = () => {
       }
     } catch (error: any) {
       console.log(error);
-      toast.error(error?.data?.error || "Login error: Unexpected error occurred");
+      toast.error(
+        error?.data?.error || "Login error: Unexpected error occurred"
+      );
       setLoading(false);
     } finally {
       setLoading(false);
     }
   };
-  const VarifyPasswordCode = async (values: { email: string; password: string }) => {
+  const VarifyPasswordCode = async (values: {
+    email: string;
+    password: string;
+  }) => {
     setLoading(true);
 
     try {
@@ -153,8 +164,7 @@ export const useLogin = () => {
         // Labels(data?.message || "Something went wrong", "success");
         if (data?.loginExpired === true) {
           router.push(`/2fa`);
-        }
-        else if (data?.loginExpired === false) {
+        } else if (data?.loginExpired === false) {
           toast.success("Login successful");
           setCookies("token", data.data.token);
           setCookies("role", data.data?.role);
@@ -166,7 +176,10 @@ export const useLogin = () => {
           //   );
           //   dispatch(setPermissions(filteredMenu));
           // }
-          if (data?.data?.role === "user" || data?.data?.role === "club-admin") {
+          if (
+            data?.data?.role === "user" ||
+            data?.data?.role === "club-admin"
+          ) {
             router.push(`/ebay/dashboard`);
           }
         }
@@ -177,13 +190,18 @@ export const useLogin = () => {
       }
     } catch (error: any) {
       console.log(error);
-      toast.error(error?.data?.error || "Login error: Unexpected error occurred");
+      toast.error(
+        error?.data?.error || "Login error: Unexpected error occurred"
+      );
       setLoading(false);
     } finally {
       setLoading(false);
     }
   };
-  const ForgotPassword = async (values: { email: string; password: string }) => {
+  const ForgotPassword = async (values: {
+    email: string;
+    password: string;
+  }) => {
     setLoading(true);
     try {
       const result = await ForgotPasswordd(values);
@@ -201,7 +219,9 @@ export const useLogin = () => {
       }
     } catch (error: any) {
       console.log(error);
-      toast.error(error?.data?.error || "Login error: Unexpected error occurred");
+      toast.error(
+        error?.data?.error || "Login error: Unexpected error occurred"
+      );
       setLoading(false);
     } finally {
       setLoading(false);
@@ -225,11 +245,22 @@ export const useLogin = () => {
       }
     } catch (error: any) {
       console.log(error);
-      toast.error(error?.data?.error || "Login error: Unexpected error occurred");
+      toast.error(
+        error?.data?.error || "Login error: Unexpected error occurred"
+      );
       setLoading(false);
     } finally {
       setLoading(false);
     }
   };
-  return { handleLogin, handleSignup, handleLogout, loading, ForgotPassword, ResetPassword, Varify2FA, VarifyPasswordCode };
+  return {
+    handleLogin,
+    handleSignup,
+    handleLogout,
+    loading,
+    ForgotPassword,
+    ResetPassword,
+    Varify2FA,
+    VarifyPasswordCode,
+  };
 };

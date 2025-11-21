@@ -11,8 +11,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Image from "next/image";
 import { BellIcon, MenuIcon } from "@/icons";
+import { useLogin } from "@/hooks/ApiHooks/useLogin";
 
 const DashboardHeader = ({ collapsed, setCollapsed }: any) => {
+  const { handleLogout } = useLogin();
   return (
     <header className="sticky top-0 z-40 w-full border-b border-b-[#E5E7EB] bg-white py-3">
       <div className="container-fluid">
@@ -83,7 +85,7 @@ const DashboardHeader = ({ collapsed, setCollapsed }: any) => {
                 <DropdownMenuItem>Settings</DropdownMenuItem>
                 <DropdownMenuItem>Billing</DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Log out</DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogout}>Log out</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
