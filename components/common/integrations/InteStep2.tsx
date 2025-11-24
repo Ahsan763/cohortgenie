@@ -2,6 +2,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { useGetStep2Integration } from "@/hooks/ReactQueryHooks/dashboard";
 import {
   ChartIcon,
   CheckFillIcon,
@@ -12,6 +13,8 @@ import {
 // import { Progress } from "@/components/ui/progress";
 import { Check, Lock, Database, BarChart3, Loader2 } from "lucide-react";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 
 // 1. Define the status data structure
 const syncSteps = [
@@ -43,9 +46,18 @@ interface SyncStepProps {
 }
 
 const SyncStep = ({ title, status, Icon }: SyncStepProps) => {
+  const params = useSearchParams();
+  const code = params.get("code");
+  const state = params.get("state");
+  const filter = { code, state };
   const isCompleted = status === "completed";
   const isInProgress = status === "in-progress";
-
+  const { data, isLoading, isError } = useGetStep2Integration(filter);
+  // useEffect(() => {
+  //   if (filter) {
+  //     useGetStep2Integration(filter);
+  //   }
+  // }, [filter]);
   const baseClasses =
     "flex items-center justify-between p-4 rounded-lg border transition-colors duration-300";
   let statusClasses = "";
@@ -149,7 +161,9 @@ export default function InteStep2() {
         <div className="w-8 h-8 flex items-center justify-center rounded-full bg-[#9B6EEE1A]">
           <Lock className="h-4 w-4 text-purple-600" />
         </div>
-        <span className="text-sm">Your data is encrypted and processed securely</span>
+        <span className="text-sm">
+          Your data is encrypted and processed securely
+        </span>
       </div>
     </>
   );

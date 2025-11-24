@@ -1,4 +1,4 @@
-import { getDashboard } from "@/services/DashboardServices";
+import { getDashboard, getStep2ntegration } from "@/services/DashboardServices";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
@@ -43,5 +43,17 @@ export const useGetDashboard = (filters: any) => {
     queryFn: () => getDashboard(queryParams),
     staleTime: 0,
     enabled: !!filters.selectedType,
+  });
+};
+export const useGetStep2Integration = (params: {
+  code: string | null;
+  state: string | null;
+}) => {
+  const isEnabled = !!params.code && !!params.state;
+  return useQuery({
+    queryKey: ["step2Integration", params],
+    queryFn: () => getStep2ntegration(params),
+    enabled: isEnabled, // only run when both exist
+    staleTime: 0,
   });
 };

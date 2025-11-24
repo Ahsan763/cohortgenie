@@ -135,7 +135,7 @@ const monthNames = [
   "Nov",
   "Dec",
 ];
-export function processMatrix(matrix, type, mode, n) {
+export function processMatrix(matrix:any, type:any, mode:any, n:any) {
   console.log("🚀 ~ processMatrix ~ n:", n);
   console.log("🚀 ~ processMatrix ~ mode:", mode);
   console.log("🚀 ~ processMatrix ~ type:", type);
@@ -222,13 +222,13 @@ export function processMatrix(matrix, type, mode, n) {
   const result = [];
 
   // Get labels based on type
-  const getLabel = (idx) => {
+  const getLabel = (idx:any) => {
     if (type === "month") return monthNames[idx];
     if (type === "quarter") return `Q${idx + 1}`;
     if (type === "year") return `Y${idx + 1}`;
   };
 
-  const getKey = (idx) => {
+  const getKey = (idx:any) => {
     if (type === "month") return `M${idx + 1}`;
     if (type === "quarter") return `quarter`;
     if (type === "year") return `year`;
@@ -268,7 +268,7 @@ export function processMatrix(matrix, type, mode, n) {
       mode === "all" ? filteredValues : filteredValues.slice(0, n);
 
     // Build result object
-    const obj = {};
+    const obj =<any> {};
     if (type === "month") {
       obj.month = `M${col + 1}`;
     } else if (type === "quarter") {
@@ -280,10 +280,11 @@ export function processMatrix(matrix, type, mode, n) {
     // Add each selected value with its row label as key
     selected.forEach((item) => {
       const label = getLabel(item.rowIdx);
-      obj[label] = item.value;
+      if (label !== undefined) {
+        obj[label] = item?.value;
+      }
     });
 
-    // Only push if there are values besides the key (month/quarter/year)
     if (Object.keys(obj).length > 1) {
       result.push(obj);
     }

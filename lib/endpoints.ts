@@ -12,6 +12,7 @@ const ENDPOINTS: Endpoints = {
   TWOFA: "users/verify-otp",
   // COHORTDATA
   COHORTDATA: "revenue/financial-report",
+  STEP2INTEG: "/quickbooks/callback",
 };
 
 export { BASE_URL, ENDPOINTS };

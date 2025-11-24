@@ -33,7 +33,7 @@ export const ResetPasswordSchema = yup.object().shape({
     .required("New Password is required"),
   cpassword: yup
     .string()
-    .oneOf([yup.ref("newPassword"), null], "Confirm Password must match the Password")
+    .oneOf([yup.ref("newPassword")], "Confirm Password must match the Password")
     .required("Confirm Password is required"),
 
   token: yup.string().nullable(),

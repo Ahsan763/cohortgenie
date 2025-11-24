@@ -18,6 +18,8 @@ import {
 } from "lucide-react";
 import { CheckIcon, DataIcon, FlowerIcon, SearchStatusIcon } from "@/icons";
 import Image from "next/image";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 const ProcessStep = ({
   icon: Icon,
   title,
@@ -32,8 +34,31 @@ const ProcessStep = ({
     <p className="text-sm font-medium text-primary-text">{title}</p>
   </div>
 );
+export const quickbooksAuth = async () => {
+  try {
+    const res = await fetch("http://localhost:5000/api/quickbooks/auth", {
+      method: "GET",
+    });
 
+    if (!res.ok) {
+      throw new Error("API error: " + res.statusText);
+    }
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("QuickBooks Auth Error:", error);
+    return null;
+  }
+};
 const InteStep1 = () => {
+  const user = useSelector((state: RootState) => {
+    return state.user.user;
+  });
+
+  const loginWithQuickbooks = () => {
+    window.location.href = `http://localhost:5000/api/quickbooks/auth?user_id=${user?._id}`;
+  };
   return (
     <>
       <div className="flex items-center justify-center space-x-2 mb-4">
@@ -59,10 +84,10 @@ const InteStep1 = () => {
                 />
               </div>
             </div>
-            <div className="flex items-center space-x-1 text-sm text-secondary-text py-1 px-3 bg-[#F3F4F6] rounded-full">
+            {/* <div className="flex items-center space-x-1 text-sm text-secondary-text py-1 px-3 bg-[#F3F4F6] rounded-full">
               <div className="w-2 h-2 rounded-full bg-secondary-text"></div>
               <span>Not Connected</span>
-            </div>
+            </div> */}
           </div>
           <h1 className="text-xl font-medium mb-1.5">QuickBooks Online</h1>
           <p className="text-sm text-secondary-text mb-8">
@@ -70,7 +95,7 @@ const InteStep1 = () => {
             analyze retention metrics.
           </p>
           <div className="grid grid-cols-2 gap-x-6">
-            <Button className="" variant={"main"}>
+            <Button className="" variant={"main"} onClick={loginWithQuickbooks}>
               <CircleCheckBig className="mr-2 h-5 w-5" />
               Connect QuickBooks
             </Button>

@@ -58,22 +58,14 @@ export const useLogin = () => {
       const { status, data } = result;
       console.log("🚀 ~ handleLogin ~ data:", data);
       if (status === 200) {
-        // if (data?.loginExpired === true) {
-        //   router.push(`/login?method=2fa`);
-        // }
-        // if (data?.loginExpired === false) {
-        toast.success("Login successful");
         setCookies("token", data.token);
+        if (data?.connection_flag === true) {
+          router.push(`/dashboard?/home/`);
+        } else {
+          router.push(`/integration?step=1/`);
+        }
         dispatch(loginn(data.user));
-        // if (data?.role === "admin") {
-        //   router.push(`/admin/dashboard/`);
-        // } else {
-        //   router.push(`/dashboard/home/`);
-        // }
-        router.push(`/dashboard/home/`);
-        // }
-        // console.log(data?.data?.token);
-        // router.push(`/${data?.data?.role}/dashboard`);
+        toast.success("Login successful");
       } else {
         toast.error("Login failed: API returned error");
       }
@@ -91,9 +83,6 @@ export const useLogin = () => {
     setLoading(true);
     try {
       removeCookies("token");
-      removeCookies("role");
-      removeCookies("switch_role");
-      // dispatch(logout());
       toast.success("Logged out successfully");
       router.push("/login");
     } catch (error: any) {
