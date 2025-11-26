@@ -2,7 +2,6 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { useGetStep2Integration } from "@/hooks/ReactQueryHooks/dashboard";
 import {
   ChartIcon,
   CheckFillIcon,
@@ -10,95 +9,143 @@ import {
   GroupIcon,
   LockIcon,
 } from "@/icons";
-// import { Progress } from "@/components/ui/progress";
+import { RootState } from "@/redux/store";
+import {
+  getCreditmemo,
+  getCustomer,
+  getInvoice,
+  getRefundreceipt,
+  getSalesreceipt,
+  useGetUser,
+} from "@/services/DashboardServices";
 import { Check, Lock, Database, BarChart3, Loader2 } from "lucide-react";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
 
-// 1. Define the status data structure
-const syncSteps = [
-  {
-    id: 1,
-    title: "Connect to QuickBooks",
-    status: "completed",
-    icon: LockIcon,
-  },
-  {
-    id: 2,
-    title: "Fetching transaction data",
-    status: "completed",
-    icon: DatabaseIcon,
-  },
-  {
-    id: 3,
-    title: "Analyzing retention metrics",
-    status: "in-progress",
-    icon: ChartIcon,
-  },
-];
+// const syncSteps = [
+//   {
+//     id: 1,
+//     title: "Connect to QuickBooks",
+//     status: "completed",
+//     icon: LockIcon,
+//   },
+//   {
+//     id: 2,
+//     title: "Fetching transaction data",
+//     status: "completed",
+//     icon: DatabaseIcon,
+//   },
+//   {
+//     id: 3,
+//     title: "Analyzing retention metrics",
+//     status: "in-progress",
+//     icon: ChartIcon,
+//   },
+// ];
 
-// 2. Custom Component for a single sync step
 interface SyncStepProps {
   title: string;
-  status: "completed" | "in-progress" | "pending";
+  status: any;
   Icon: React.ElementType;
 }
 
 const SyncStep = ({ title, status, Icon }: SyncStepProps) => {
-  const params = useSearchParams();
-  const code = params.get("code");
-  const state = params.get("state");
-  const filter = { code, state };
-  const isCompleted = status === "completed";
-  const isInProgress = status === "in-progress";
-  const { data, isLoading, isError } = useGetStep2Integration(filter);
-  // useEffect(() => {
-  //   if (filter) {
-  //     useGetStep2Integration(filter);
-  //   }
-  // }, [filter]);
   const baseClasses =
     "flex items-center justify-between p-4 rounded-lg border transition-colors duration-300";
+
   let statusClasses = "";
   let iconColor = "";
+  let showLoader = false;
 
-  if (isCompleted) {
-    statusClasses = "bg-[#F0FDF4] border-[#9DDFB7]";
+  if (status === "completed") {
+    statusClasses = "bg-[#F0FDF4] border-[#9DDFB7] text-[#009A3E]";
     iconColor = "#009A3E";
-  } else if (isInProgress) {
-    statusClasses = "border-[#9B6EEE]";
+  } else if (status === "loading") {
+    statusClasses = "border-[#9B6EEE] text-[#9B6EEE]";
     iconColor = "#9B6EEE";
+    showLoader = true;
   } else {
-    statusClasses = "bg-gray-50 border-gray-300 opacity-70";
-    iconColor = "text-gray-500";
+    statusClasses = "border-[#6B7280] text-[#6B7280] opacity-75";
+    iconColor = "#6B7280";
   }
 
   return (
     <div className={`${baseClasses} ${statusClasses}`}>
       <div className="flex items-center space-x-3">
-        <Icon color={`${iconColor}`} />
-        <span
-          className={`font-medium text-sm ${isInProgress ? "text-[#9B6EEE]" : "text-[#009A3E]"}`}
-        >
-          {title}
-        </span>
+        <Icon color={iconColor} />
+        <span className="font-medium text-sm">{title}</span>
       </div>
 
-      {isCompleted ? (
+      {status === "completed" ? (
         <CheckFillIcon color="#009A3E" />
-      ) : isInProgress ? (
-        <Loader2 className="h-5 w-5 text-purple-600 animate-spin" />
-      ) : (
-        <span className="text-gray-400"></span>
-      )}
+      ) : showLoader ? (
+        <Loader2 className="h-5 w-5 animate-spin" />
+      ) : null}
     </div>
   );
 };
 
 export default function InteStep2() {
-  const progressValue = 90;
+  const [step1, setStep1] = useState("completed");
+  const [step2, setStep2] = useState("inactive");
+  const [step3, setStep3] = useState("inactive");
+  const [userData, setUserData] = useState<any>(null);
+  const [progressValue, setProgressValue] = useState(0);
+  const router = useRouter();
+  const hasRun = useRef(false);
 
+  const { getUser } = useGetUser();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { res, data } = await getUser();
+      if (res?.status === 200) {
+        setUserData(data.user);
+      }
+    };
+    fetchUser();
+  }, []);
+
+  useEffect(() => {
+    if (!userData) return;
+    if (!userData?.connection_flag) return;
+    if (hasRun.current) return;
+    hasRun.current = true;
+    const runSync = async () => {
+      try {
+        setStep2("loading");
+
+        const steps = [
+          { fn: getInvoice, progress: 20 },
+          { fn: getCustomer, progress: 40 },
+          { fn: getSalesreceipt, progress: 60 },
+          { fn: getRefundreceipt, progress: 80 },
+          { fn: getCreditmemo, progress: 100 },
+        ];
+        for (let step of steps) {
+          const res = await step.fn();
+          if (res?.status === 200) {
+            setProgressValue(step.progress);
+          } else {
+            setStep2("completed");
+            return;
+          }
+        }
+        setStep2("completed");
+        setStep3("loading");
+        setTimeout(() => {
+          setStep3("completed");
+          router.push("/dashboard/home");
+        }, 2000);
+      } catch (err) {
+        console.log("Sync Error:", err);
+        setStep2("completed");
+      }
+    };
+    runSync();
+  }, [userData]);
   return (
     <>
       <div className="flex flex-col items-center mb-10">
@@ -110,7 +157,6 @@ export default function InteStep2() {
           We're analyzing your transactions and preparing your first dashboard
         </p>
       </div>
-
       <Card className="w-full">
         <CardContent className="flex flex-col items-center px-16 py-4">
           <div className="bg-[#9B6EEE33] flex items-center rounded-full justify-center border-2 border-white w-20 h-20 outline-4 outline-[#9B6EEE33] mb-6">
@@ -130,7 +176,9 @@ export default function InteStep2() {
               <span className="text-secondary-text">Progress</span>
               <span className="font-semibold text-primary-text flex items-center">
                 {progressValue}%
-                <Loader2 className="h-4 w-4 text-gray-400 ml-1 animate-spin" />
+                {step3 !== "completed" && (
+                  <Loader2 className="h-4 w-4 text-gray-400 ml-1 animate-spin" />
+                )}
               </span>
             </div>
             <Progress
@@ -140,14 +188,23 @@ export default function InteStep2() {
           </div>
 
           <div className="w-full space-y-6 mb-8">
-            {syncSteps.map((step) => (
-              <SyncStep
-                key={step.id}
-                title={step.title}
-                status={step.status as "completed" | "in-progress"}
-                Icon={step.icon}
-              />
-            ))}
+            <SyncStep
+              title="Connect to QuickBooks"
+              status={step1}
+              Icon={LockIcon}
+            />
+
+            <SyncStep
+              title="Fetching transaction data"
+              status={step2}
+              Icon={DatabaseIcon}
+            />
+
+            <SyncStep
+              title="Analyzing retention metrics"
+              status={step3}
+              Icon={ChartIcon}
+            />
           </div>
 
           <p className="text-sm text-secondary-text text-center">

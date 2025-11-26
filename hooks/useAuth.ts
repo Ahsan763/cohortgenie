@@ -1,4 +1,4 @@
-import { destroyCookie, setCookie, parseCookies } from 'nookies';
+import { destroyCookie, setCookie, parseCookies } from "nookies";
 
 interface CookieOptions {
   path?: string;
@@ -8,11 +8,19 @@ interface CookieOptions {
   sameSite?: "lax" | "strict" | "none";
 }
 
-export const setCookies = (key: string, value: string, options: CookieOptions = { path: "/", maxAge: 30 * 24 * 60 * 60 }) => {
-  setCookie(null, key, value, options);
+export const setCookies = (
+  key: string,
+  value: string,
+  options: CookieOptions = { path: "/", maxAge: 30 * 24 * 60 * 60 } // Default options defined here
+) => {
+  setCookie(null, key, value, options); // This looks correct
+  console.log("🚀 ~ setCookies ~ value:", value)
 };
 
-export const removeCookies = (key: string, options: CookieOptions = { path: "/" }) => {
+export const removeCookies = (
+  key: string,
+  options: CookieOptions = { path: "/" }
+) => {
   destroyCookie(null, key, options);
 };
 

@@ -12,11 +12,13 @@ import {
 import Image from "next/image";
 import { BellIcon, MenuIcon } from "@/icons";
 import { useLogin } from "@/hooks/ApiHooks/useLogin";
+import RootUserFlagCheck from "../RootUserFlagCheck";
 
 const DashboardHeader = ({ collapsed, setCollapsed }: any) => {
   const { handleLogout } = useLogin();
   return (
     <header className="sticky top-0 z-40 w-full border-b border-b-[#E5E7EB] bg-white py-3">
+      <RootUserFlagCheck/>
       <div className="container-fluid">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-x-3">

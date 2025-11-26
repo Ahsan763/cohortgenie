@@ -5,6 +5,7 @@ import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client
 import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
 import { Providers } from "@/redux/Providers";
 import { useState } from "react";
+import RootUserFlagCheck from "@/components/common/RootUserFlagCheck";
 
 const RootLayoutWrapper = ({
   children,
@@ -36,7 +37,7 @@ const RootLayoutWrapper = ({
           <Providers>{children}</Providers>
         </PersistQueryClientProvider>
       ) : (
-        <Providers>{children}</Providers>
+        <Providers> {children}</Providers>
       )}
     </SessionProvider>
   );

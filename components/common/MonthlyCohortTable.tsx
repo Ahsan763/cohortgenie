@@ -1,3 +1,5 @@
+import { Skeleton } from "../ui/skeleton";
+
 const getColor = (value: any): string => {
   // Handle null, undefined, or zero values
   if (!value || value === 0) {
@@ -47,9 +49,7 @@ const months = [
   "M12",
 ];
 
-
-
-export default function MonthlyCohortTable({ matrix, labels }: any) {
+export default function MonthlyCohortTable({ matrix, labels, loading }: any) {
   // const filteredMatrix = monthsdata
   //   ?.map((row: any) => {
   //     const startIndex = row?.findIndex((v: any) => v === 100);
@@ -62,34 +62,43 @@ export default function MonthlyCohortTable({ matrix, labels }: any) {
 
   return (
     <div className="w-full overflow-auto">
-      <div className="grid grid-cols-13 gap-2 mb-3 px-2 bg-[#F9FAFB] rounded-md">
-        <div className="rounded-md py-2.5 px-2 text-center text-sm ">
-          Cohort
-        </div>
-        {months?.map((m) => (
-          <div key={m} className="rounded-md py-2.5 px-2 text-center text-sm ">
-            {m}
-          </div>
-        ))}
-      </div>
-      <div className="space-y-2">
-        {alignedMatrix?.map((row: any, rIndex: any) => (
-          <div key={rIndex} className="grid grid-cols-13 gap-2">
-            <div className="text-sm flex items-center justify-center text-primary-text">
-              {labels[rIndex]}
+      {loading ? (
+        <Skeleton className="h-[600px]" />
+      ) : (
+        <>
+          <div className="grid grid-cols-13 gap-2 mb-3 px-2 bg-[#F9FAFB] rounded-md">
+            <div className="rounded-md py-2.5 px-2 text-center text-sm ">
+              Cohort
             </div>
-
-            {row?.map((value: any, cIndex: any) => (
+            {months?.map((m) => (
               <div
-                key={cIndex}
-                className={`rounded-md py-2.5 px-2 text-center text-sm min-h-10 ${getColor(value)}`}
+                key={m}
+                className="rounded-md py-2.5 px-2 text-center text-sm "
               >
-                {value !== 0 ? `${value}%` : ""}
+                {m}
               </div>
             ))}
           </div>
-        ))}
-      </div>
+          <div className="space-y-2">
+            {alignedMatrix?.map((row: any, rIndex: any) => (
+              <div key={rIndex} className="grid grid-cols-13 gap-2">
+                <div className="text-sm flex items-center justify-center text-primary-text">
+                  {labels[rIndex]}
+                </div>
+
+                {row?.map((value: any, cIndex: any) => (
+                  <div
+                    key={cIndex}
+                    className={`rounded-md py-2.5 px-2 text-center text-sm min-h-10 ${getColor(value)}`}
+                  >
+                    {value !== 0 ? `${value}%` : ""}
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }

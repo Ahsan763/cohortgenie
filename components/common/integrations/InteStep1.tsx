@@ -20,6 +20,8 @@ import { CheckIcon, DataIcon, FlowerIcon, SearchStatusIcon } from "@/icons";
 import Image from "next/image";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 const ProcessStep = ({
   icon: Icon,
   title,
@@ -52,12 +54,15 @@ export const quickbooksAuth = async () => {
   }
 };
 const InteStep1 = () => {
-  const user = useSelector((state: RootState) => {
-    return state.user.user;
-  });
-
+  const userData = useSelector((state: RootState) => state.user.user);
+  const router = useRouter();
+  useEffect(() => {
+    if (userData?.connection_flag === true) {
+      router.push("/dashboard/home");
+    }
+  }, [userData]);
   const loginWithQuickbooks = () => {
-    window.location.href = `http://localhost:5000/api/quickbooks/auth?user_id=${user?._id}`;
+    window.location.href = `http://localhost:5000/api/quickbooks/auth?user_id=${userData?._id}`;
   };
   return (
     <>
@@ -99,7 +104,12 @@ const InteStep1 = () => {
               <CircleCheckBig className="mr-2 h-5 w-5" />
               Connect QuickBooks
             </Button>
-            <Button variant="outline">Skip / Try Demo</Button>
+            <Button
+              variant="outline"
+              onClick={() => router.push(`/dashboard/home?demo=true`)}
+            >
+              Skip / Try Demo
+            </Button>
           </div>
         </CardContent>
       </Card>

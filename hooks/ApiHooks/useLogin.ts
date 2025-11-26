@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { getCookies, removeCookies, setCookies } from "@/hooks/useAuth";
+import { removeCookies, setCookies } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import {
@@ -8,8 +8,8 @@ import {
   login,
   ResetPasswordd,
   SignUp,
-  TwoFACode,
-  VerifyCode,
+  // TwoFACode,
+  // VerifyCode,
 } from "@/services/auth/auth";
 import { loginn, logout, signup } from "@/redux/userSlice";
 import toast from "react-hot-toast";
@@ -23,58 +23,53 @@ export const useLogin = () => {
     try {
       const result = await SignUp(values);
       if (!result) {
-        toast.error("Login failed: No response from API");
+        toast.error("Signup failed: No response from API");
         return;
       }
       const { status, data } = result;
       if (status === 201) {
-        console.log("saaaaaaa", data.token, data.user);
         toast.success("Signup successful");
         setCookies("token", data.token);
         dispatch(signup(data.user));
         router.push(`/integration?step=1`);
       } else {
-        toast.error("Login failed: API returned error");
+        toast.error("Signup failed: API returned error");
       }
     } catch (error: any) {
       console.log(error);
       toast.error(
-        error?.data?.error || "Login error: Unexpected error occurred"
+        error?.data?.message || "Signup error: Unexpected error occurred"
       );
       setLoading(false);
     } finally {
       setLoading(false);
     }
   };
-  const handleLogin = async (values: { email: string; password: string }) => {
+  const handleLogin = async (values: any) => {
     setLoading(true);
     try {
       const result = await login(values);
-      console.log(result, "loginDataafterLogin");
       if (!result) {
-        toast.error("Login failed: No response from API");
+        toast.error("No response from API");
         return;
       }
       const { status, data } = result;
-      console.log("🚀 ~ handleLogin ~ data:", data);
       if (status === 200) {
-        setCookies("token", data.token);
-        if (data?.connection_flag === true) {
-          router.push(`/dashboard?/home/`);
-        } else {
-          router.push(`/integration?step=1/`);
-        }
-        dispatch(loginn(data.user));
-        toast.success("Login successful");
+        toast.success("Login successfull");
+        setCookies("token", data?.token);
+        dispatch(loginn(data?.user));
+        setTimeout(() => {
+          if (data?.connection_flag === false) {
+            router?.push("/integration?step=1");
+          } else {
+            router?.push("/dashboard/home");
+          }
+        }, 1000);
       } else {
-        toast.error("Login failed: API returned error");
+        toast.error("API returned error");
       }
     } catch (error: any) {
-      console.log(error);
-      toast.error(
-        error?.data?.error || "Login error: Unexpected error occurred"
-      );
-      setLoading(false);
+      toast.error(error?.data?.message || "Unexpected error occurred");
     } finally {
       setLoading(false);
     }
@@ -92,101 +87,78 @@ export const useLogin = () => {
       setLoading(false);
     }
   };
-  const Varify2FA = async (values: { email: string; password: string }) => {
-    setLoading(true);
-    try {
-      const result = await TwoFACode(values);
-      console.log(result, "loginDataafterLogin");
-      if (!result) {
-        toast.error("Login failed: No response from API");
-        return;
-      }
-      const { status, data } = result;
-      console.log("🚀 ~ Varify2FA ~ data:", data);
-      if (status === 200) {
-        localStorage.setItem("role", data.data?.role);
-        if (data?.loginExpired === true) {
-          router.push(`/2fa`);
-        } else if (data?.loginExpired === false) {
-          toast.success("Login successful");
-          setCookies("token", data.data.token);
-          setCookies("role", data.data?.role);
-          dispatch(loginn(data.data));
-          if (data?.data?.role === "admin") {
-            router.push(`/admin/dashboard/`);
-          } else {
-            router.push(`/dashboard/home/`);
-          }
-        }
-        // console.log(data?.data?.token);
-        // router.push(`/${data?.data?.role}/dashboard`);
-      } else {
-        toast.error("Login failed: API returned error");
-      }
-    } catch (error: any) {
-      console.log(error);
-      toast.error(
-        error?.data?.error || "Login error: Unexpected error occurred"
-      );
-      setLoading(false);
-    } finally {
-      setLoading(false);
-    }
-  };
-  const VarifyPasswordCode = async (values: {
-    email: string;
-    password: string;
-  }) => {
-    setLoading(true);
-
-    try {
-      const result = await VerifyCode(values);
-      console.log(result, "loginDataafterLogin");
-      if (!result) {
-        toast.error("Login failed: No response from API");
-        return;
-      }
-
-      const { status, data } = result;
-      if (status === 200) {
-        localStorage.setItem("role", data.data?.role);
-        // Labels(data?.message || "Something went wrong", "success");
-        if (data?.loginExpired === true) {
-          router.push(`/2fa`);
-        } else if (data?.loginExpired === false) {
-          toast.success("Login successful");
-          setCookies("token", data.data.token);
-          setCookies("role", data.data?.role);
-          // dispatch(loginn(data.data));
-          // if (data?.data?.role === "staff") {
-          //   const filteredMenu = filterMenuByPermissions(
-          //     staffMenu,
-          //     data?.data?.permissions,
-          //   );
-          //   dispatch(setPermissions(filteredMenu));
-          // }
-          if (
-            data?.data?.role === "user" ||
-            data?.data?.role === "club-admin"
-          ) {
-            router.push(`/ebay/dashboard`);
-          }
-        }
-        // console.log(data?.data?.token);
-        // router.push(`/${data?.data?.role}/dashboard`);
-      } else {
-        toast.error("Login failed: API returned error");
-      }
-    } catch (error: any) {
-      console.log(error);
-      toast.error(
-        error?.data?.error || "Login error: Unexpected error occurred"
-      );
-      setLoading(false);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // const Varify2FA = async (values: { email: string; password: string }) => {
+  //   setLoading(true);
+  //   try {
+  //     const result = await TwoFACode(values);
+  //     if (!result) {
+  //       toast.error("Two step varification failed: No response from API");
+  //       return;
+  //     }
+  //     const { status, data } = result;
+  //     if (status === 200) {
+  //       if (data?.loginExpired === true) {
+  //         router.push(`/2fa`);
+  //       } else if (data?.loginExpired === false) {
+  //         toast.success("Login successful");
+  //         setCookies("token", data.data.token);
+  //         setCookies("role", data.data?.role);
+  //         dispatch(loginn(data.data));
+  //         if (data?.data?.role === "admin") {
+  //           router.push(`/admin/dashboard/`);
+  //         } else {
+  //           router.push(`/dashboard/home/`);
+  //         }
+  //       }
+  //       // console.log(data?.data?.token);
+  //       // router.push(`/${data?.data?.role}/dashboard`);
+  //     } else {
+  //       toast.error("Login failed: API returned error");
+  //     }
+  //   } catch (error: any) {
+  //     console.log(error);
+  //     toast.error(
+  //       error?.data?.message || "Varifying error: Unexpected error occurred"
+  //     );
+  //     setLoading(false);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+  // const VarifyPasswordCode = async (values: {
+  //   email: string;
+  //   password: string;
+  // }) => {
+  //   setLoading(true);
+  //   try {
+  //     const result = await VerifyCode(values);
+  //     if (!result) {
+  //       toast.error("Failed password varification: No response from API");
+  //       return;
+  //     }
+  //     const { status, data } = result;
+  //     if (status === 200) {
+  //       if (data?.loginExpired === true) {
+  //         router.push(`/2fa`);
+  //       } else if (data?.loginExpired === false) {
+  //         toast.success("Login successful");
+  //         setCookies("token", data.data.token);
+  //         setCookies("role", data.data?.role);
+  //         dispatch(loginn(data.data));
+  //       }
+  //     } else {
+  //       toast.error("Login failed: API returned error");
+  //     }
+  //   } catch (error: any) {
+  //     console.log(error);
+  //     toast.error(
+  //       error?.data?.message || "Login error: Unexpected error occurred"
+  //     );
+  //     setLoading(false);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   const ForgotPassword = async (values: {
     email: string;
     password: string;
@@ -194,22 +166,25 @@ export const useLogin = () => {
     setLoading(true);
     try {
       const result = await ForgotPasswordd(values);
-      console.log(result, "loginDataafterLogin");
       if (!result) {
-        toast.error("Login failed: No response from API");
+        toast.error("Forgot password failed: No response from API");
         return;
       }
       const { status, data } = result;
       if (status === 200) {
+        toast.success(
+          data?.message || "Password reset link has been sent to your email"
+        );
         router.push(`/login`);
         setLoading(false);
       } else {
-        toast.error("Login failed: API returned error");
+        toast.error("Forgot password failed: API returned error");
       }
     } catch (error: any) {
       console.log(error);
       toast.error(
-        error?.data?.error || "Login error: Unexpected error occurred"
+        error?.data?.message ||
+          "Forgot password error: Unexpected error occurred"
       );
       setLoading(false);
     } finally {
@@ -220,9 +195,8 @@ export const useLogin = () => {
     setLoading(true);
     try {
       const result = await ResetPasswordd(values);
-      console.log(result, "loginDataafterLogin");
       if (!result) {
-        toast.error("Login failed: No response from API");
+        toast.error("Reset passwordd failed: No response from API");
         return;
       }
       const { status, data } = result;
@@ -230,12 +204,13 @@ export const useLogin = () => {
         router.push(`/login`);
         setLoading(false);
       } else {
-        toast.error("Login failed: API returned error");
+        toast.error("Reset passwordd failed: API returned error");
       }
     } catch (error: any) {
       console.log(error);
       toast.error(
-        error?.data?.error || "Login error: Unexpected error occurred"
+        error?.data?.message ||
+          "Reset passwordd failed: Unexpected error occurred"
       );
       setLoading(false);
     } finally {
@@ -249,7 +224,7 @@ export const useLogin = () => {
     loading,
     ForgotPassword,
     ResetPassword,
-    Varify2FA,
-    VarifyPasswordCode,
+    // Varify2FA,
+    // VarifyPasswordCode,
   };
 };

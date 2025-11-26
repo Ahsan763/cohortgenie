@@ -34,6 +34,7 @@ export const loginSlides: SlideItem[] = [
   },
 ];
 export const years = ["All", "2025", "2024", "2023"];
+export const yearsOnly = [ "2025", "2024", "2023"];
 export const yearsWIthoutAll = ["2025", "2024", "2023"];
 export const months = [
   { id: "1", value: "january", label: "January" },

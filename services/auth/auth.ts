@@ -10,7 +10,12 @@ export const login = async (values: any) =>
       data: values,
     })
   );
-
+export const getLoginUser = async () =>
+  await handleApiCall<AuthResponse>(() =>
+    authRequest<AuthResponse>({
+      url: ENDPOINTS.GETLOGIN,
+    })
+  );
 export const SignUp = async (values: any) =>
   await handleApiCall<AuthResponse>(() =>
     publicRequest<AuthResponse>({
@@ -54,6 +59,8 @@ export const ResetPasswordd = async (values: any) =>
 export const RoleUpdate = async (id?: any, role?: any) =>
   await handleApiCall<AuthResponse>(() =>
     authRequest<AuthResponse>({
-      url: id ? `${ENDPOINTS.SWITCH_ROLE}?${role}=${id}` : `${ENDPOINTS.SWITCH_ROLE}`,
-    }),
+      url: id
+        ? `${ENDPOINTS.SWITCH_ROLE}?${role}=${id}`
+        : `${ENDPOINTS.SWITCH_ROLE}`,
+    })
   );

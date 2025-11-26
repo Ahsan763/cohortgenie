@@ -45,8 +45,8 @@ const page = () => {
   const {
     data: dashboardData,
     refetch,
-    isLoading,
-    isError,
+    isLoading: loading,
+    isError:error,
   } = useGetDashboard(filters);
   useEffect(() => {
     if (selectedType === "month") {
@@ -59,7 +59,8 @@ const page = () => {
       if (!selectedQuarter) setSelectedQuarter("1");
     }
 
-    if (selectedType === "yearly") {
+    if (selectedType === "year" && selectedYear !== "All") {
+      setSelectedYear("2025");
       setSelectedMonth("");
       setSelectedQuarter("");
     }
@@ -88,6 +89,7 @@ const page = () => {
     }
     if (selectedYear === "All") {
       setChartValues(dashboardData?.data?.cohortGenie?.trend?.yearly || []);
+      setSelectedType("year");
     }
   }, [dashboardData, selectedType]);
 
@@ -107,9 +109,9 @@ const page = () => {
             value={selectedYear}
             onValueChange={(year) => {
               setSelectedYear(year);
-              setSelectedType("");
-              setSelectedMonth("");
-              setSelectedQuarter("");
+              // setSelectedType("");
+              // setSelectedMonth("");
+              // setSelectedQuarter("");
             }}
           >
             <SelectTrigger className="w-[150px]">
@@ -124,7 +126,7 @@ const page = () => {
             </SelectContent>
           </Select>
 
-          {selectedYear && (
+          {selectedYear && selectedYear !== "All" && (
             <Select
               value={selectedType}
               onValueChange={(newType) => {
@@ -184,6 +186,7 @@ const page = () => {
           </Select>
         </div>
       </div>
+      {/* header filters edn */}
       <Card>
         <CardContent className="grid grid-cols-4 px-0">
           {statsData.map((stat, index) => (
@@ -194,6 +197,8 @@ const page = () => {
               statsData={statsData}
               statsDataRes={dashboardData?.data?.cohortGenie?.summary?.metrics}
               customers={dashboardData?.data?.cohortGenie?.summary?.customers}
+              loading={loading}
+              
             />
           ))}
         </CardContent>
@@ -229,14 +234,13 @@ const page = () => {
             {selectedYear === "All" && (
               <YearlyCohortTable
                 matrix={
-                  dashboardData?.data?.cohortGenie?.heatmap?.month?.monthMatrix
+                  dashboardData?.data?.cohortGenie?.heatmap?.year?.yearMatrix
                 }
-                labels={
-                  dashboardData?.data?.cohortGenie?.heatmap?.month?.monthLabels
-                }
+                labels={dashboardData?.data?.cohortGenie?.heatmap?.year?.years}
+                loading={loading}
               />
             )}
-            {selectedType === "year" && (
+            {selectedType === "year" && selectedYear !== "All" && (
               <MonthlyCohortTable
                 matrix={
                   dashboardData?.data?.cohortGenie?.heatmap?.month?.monthMatrix
@@ -244,6 +248,7 @@ const page = () => {
                 labels={
                   dashboardData?.data?.cohortGenie?.heatmap?.month?.monthLabels
                 }
+                loading={loading}
               />
             )}
             {selectedType === "quarter" && (
@@ -256,6 +261,7 @@ const page = () => {
                   dashboardData?.data?.cohortGenie?.heatmap?.quarter
                     ?.quarterLabels
                 }
+                loading={loading}
               />
             )}
             {selectedType === "month" && (
@@ -266,6 +272,7 @@ const page = () => {
                 labels={
                   dashboardData?.data?.cohortGenie?.heatmap?.month?.weekLabels
                 }
+                loading={loading}
               />
             )}
           </CardContent>

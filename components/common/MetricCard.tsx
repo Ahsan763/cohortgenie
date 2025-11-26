@@ -2,6 +2,7 @@ const MetricCard = ({
   icon: Icon,
   primaryText,
   secondaryText,
+  loading,
   chartComponent: Chart,
 }: any) => (
   <div className="flex items-center justify-between gap-x-4 flex-wrap p-8 border border-[#E5E7EB] rounded-xl bg-white">
@@ -12,9 +13,11 @@ const MetricCard = ({
         <Icon color="#6B7280" />
       </div>
       <div>
-        <p className="text-xs text-secondary-text">{secondaryText}</p>
+        <p className="text-xs text-secondary-text">
+          {loading ? "---" : secondaryText}
+        </p>
         <h3 className="text-xl font-semibold text-primary-text mt-0.5">
-          {primaryText}
+          {loading ? "---" : primaryText}
         </h3>
       </div>
     </div>

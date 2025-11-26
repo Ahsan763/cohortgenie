@@ -48,16 +48,15 @@ const ToggleGroup = ({ type, onValueChange, items }: any) => (
     ))}
   </div>
 );
-const legendItems = [
-  { label: "Jan 2025", color: "bg-teal-400" },
-  { label: "Mar 2025", color: "bg-blue-500" },
-  { label: "Feb 2025", color: "bg-violet-500" },
-];
+// const legendItems = [
+//   { label: "Jan 2025", color: "bg-teal-400" },
+//   { label: "Mar 2025", color: "bg-blue-500" },
+//   { label: "Feb 2025", color: "bg-violet-500" },
+// ];
 const page = () => {
   const [selectedYear, setSelectedYear] = useState("2025");
   const [selectedType, setSelectedType] = useState("month");
   const [chartType, setChartType] = useState("top");
-  console.log("🚀 ~ page ~ chartType:", chartType);
   const [cohortPerformanceValues, setCohortPerformanceValues] = useState<any>();
   console.log("🚀 ~ page ~ cohortPerformanceValues:", cohortPerformanceValues);
   const [filters, setFilters] = useState({
@@ -65,11 +64,10 @@ const page = () => {
     selectedType: "month",
   });
   const [chartValues, setChartValues] = useState<any>();
-  console.log("🚀 ~ page ~ chartValues:", chartValues);
   const {
     data: dashboardData,
     refetch,
-    isLoading,
+    isLoading: loading,
     isError,
   } = useGetDashboard(filters);
 
@@ -106,9 +104,7 @@ const page = () => {
 
     setCohortPerformanceValues(result);
 
-    if (
-      selectedType === "month" 
-    ) {
+    if (selectedType === "month") {
       result2 = processMatrix(
         dashboardData.data.cohortGenie.heatmap.month.monthMatrix,
         selectedType,
@@ -117,9 +113,7 @@ const page = () => {
       );
     }
 
-    if (
-      selectedType === "quarter" 
-    ) {
+    if (selectedType === "quarter") {
       result2 = processMatrix(
         dashboardData.data.cohortGenie.heatmap.quarter.quarterMatrix,
         selectedType,
@@ -128,9 +122,7 @@ const page = () => {
       );
     }
 
-    if (
-      selectedType === "year" 
-    ) {
+    if (selectedType === "year") {
       result2 = processMatrix(
         dashboardData.data.cohortGenie.heatmap.year.yearMatrix,
         selectedType,
@@ -167,7 +159,7 @@ const page = () => {
       </div>
       <Card>
         <CardContent>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mb-6">
             <h6 className="text-primary-text font-medium text-lg">
               Cohort Retention Analysis
             </h6>
@@ -207,6 +199,7 @@ const page = () => {
           </div>
           {selectedType === "month" && (
             <MonthlyCohortTable
+              loading={loading}
               matrix={
                 dashboardData?.data?.cohortGenie?.heatmap?.month?.monthMatrix
               }
@@ -217,6 +210,7 @@ const page = () => {
           )}
           {selectedType === "quarter" && (
             <QuartlyCohortTable
+              loading={loading}
               matrix={
                 dashboardData?.data?.cohortGenie?.heatmap?.quarter
                   ?.quarterMatrix
@@ -229,6 +223,7 @@ const page = () => {
           )}
           {selectedType === "year" && (
             <YearlyCohortTable
+              loading={loading}
               matrix={
                 dashboardData?.data?.cohortGenie?.heatmap?.year?.yearMatrix
               }
@@ -247,12 +242,14 @@ const page = () => {
           }
           primaryText={`${cohortPerformanceValues?.highestValue}% Retention`}
           chartComponent={<Chart1 />}
+          loading={loading}
         />
         <MetricCard
           icon={retentionData.lowest.icon}
           secondaryText={`Lowest: ${cohortPerformanceValues?.lowestLabel} ${selectedYear}`}
           primaryText={`${cohortPerformanceValues?.lowestValue}% Retention`}
           chartComponent={<Chart2 />}
+          loading={loading}
         />
         <MetricCard
           icon={retentionData.average.icon}
@@ -261,6 +258,7 @@ const page = () => {
           chartComponent={
             <ProgressRingChart value={cohortPerformanceValues?.averageValue} />
           }
+          loading={loading}
         />
       </div>
       <Card>

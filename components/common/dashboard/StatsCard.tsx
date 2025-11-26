@@ -8,6 +8,7 @@ const StatsCard = ({
   statsData,
   statsDataRes,
   customers,
+  loading,
 }: any) => {
   const [hover, setHover] = useState(false);
   return (
@@ -29,14 +30,18 @@ const StatsCard = ({
           {stat.title}
         </span>
         <div className="text-[28px] font-bold text-primary-text group-hover:text-[#9B6EEE] transition-all">
-          {index === 0 && statsDataRes?.GDR}
-          {index === 1 && statsDataRes?.NDR}
-          {index === 2 && statsDataRes?.LTV}
-          {index === 3 && customers}
+          {loading ? "-" : index === 0 && statsDataRes?.GDR}
+          {loading ? "-" : index === 1 && statsDataRes?.NDR}
+          {loading ? "-" : index === 2 && statsDataRes?.LTV}
+          {loading ? "-" : index === 3 && customers}
           {/* {stat.value} */}
         </div>
         <span className="text-secondary-text text-sm">
-          {index === 3 ? `Churn Rate: ${statsDataRes?.churn}` : stat.label}
+          {loading
+            ? "-"
+            : index === 3
+              ? `Churn Rate: ${statsDataRes?.churn}`
+              : stat.label}
         </span>
       </div>
       {/* <div className="flex items-center bg-green-50 text-green-600 rounded-lg px-2 py-1 text-xs font-medium">

@@ -1,3 +1,5 @@
+import { Skeleton } from "@/components/ui/skeleton";
+
 const getColor = (value: any): string => {
   // Handle null, undefined, or zero values
   if (!value || value === 0) {
@@ -34,7 +36,7 @@ const getColor = (value: any): string => {
 };
 const labels = ["Q1", "Q2", "Q3", "Q4"];
 
-export default function QuartlyCohortTable({ labels, matrix }: any) {
+export default function QuartlyCohortTable({ labels, matrix, loading }: any) {
   console.log("🚀 ~ QuartlyCohortTable ~ labels:", labels);
   console.log("🚀 ~ QuartlyCohortTable ~ quarterMatrix:", matrix);
   // const filteredMatrix = quarterMatrix
@@ -51,34 +53,43 @@ export default function QuartlyCohortTable({ labels, matrix }: any) {
     }) || [];
   return (
     <div className="w-full overflow-auto">
-      <div className="grid grid-cols-5 gap-2 mb-3 px-2 bg-[#F9FAFB] rounded-md">
-        <div className="rounded-md py-2.5 px-2 text-center text-sm ">
-          Cohort
-        </div>
-        {labels?.map((m:any) => (
-          <div key={m} className="rounded-md py-2.5 px-2 text-center text-sm ">
-            {m}
-          </div>
-        ))}
-      </div>
-      <div className="space-y-2">
-        {alignedMatrix?.map((row: any, rIndex: any) => (
-          <div key={rIndex} className="grid grid-cols-5 gap-2">
-            <div className="text-sm flex items-center justify-center text-primary-text">
-              {labels[rIndex]}
+      {loading ? (
+        <Skeleton className="h-[235px]" />
+      ) : (
+        <>
+          <div className="grid grid-cols-5 gap-2 mb-3 px-2 bg-[#F9FAFB] rounded-md">
+            <div className="rounded-md py-2.5 px-2 text-center text-sm ">
+              Cohort
             </div>
-
-            {row.map((value: any, cIndex: any) => (
+            {labels?.map((m: any) => (
               <div
-                key={cIndex}
-                className={`rounded-md py-2.5 px-2 text-center text-sm   ${getColor(value)}`}
+                key={m}
+                className="rounded-md py-2.5 px-2 text-center text-sm "
               >
-                {value !== 0 ? `${value}%` : ""}
+                {m}
               </div>
             ))}
           </div>
-        ))}
-      </div>
+          <div className="space-y-2">
+            {alignedMatrix?.map((row: any, rIndex: any) => (
+              <div key={rIndex} className="grid grid-cols-5 gap-2">
+                <div className="text-sm flex items-center justify-center text-primary-text">
+                  {labels[rIndex]}
+                </div>
+
+                {row.map((value: any, cIndex: any) => (
+                  <div
+                    key={cIndex}
+                    className={`rounded-md py-2.5 px-2 text-center text-sm   ${getColor(value)}`}
+                  >
+                    {value !== 0 ? `${value}%` : ""}
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }

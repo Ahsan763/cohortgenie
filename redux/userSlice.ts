@@ -44,7 +44,7 @@ export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    loginn: (state, action: PayloadAction<User>) => {
+    loginn: (state, action: any) => {
       state.user = action.payload;
       setLocalStorageItem("user", action.payload);
     },
@@ -52,13 +52,19 @@ export const userSlice = createSlice({
       state.user = action.payload;
       setLocalStorageItem("user", action.payload);
     },
+    updateConnectionFlag: (state, action: any) => {
+      if (state.user) {
+        state.user.connection_flag = action.payload.connection_flag;
+      }
+    },
     logout: (state) => {
-      state.user = null;
+      // state.user = null;
       ["user"].forEach(removeLocalStorageItem);
     },
   },
 });
 
-export const { loginn, signup, logout } = userSlice.actions;
+export const { loginn, signup, logout, updateConnectionFlag } =
+  userSlice.actions;
 
 export default userSlice.reducer;
