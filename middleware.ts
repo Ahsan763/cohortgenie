@@ -1,15 +1,21 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-const PUBLIC_PATHS = ["/login", "/signup", "/varify-code", "/forgot-password", "/2fa"];
-const PROTECTED_PATHS = ["/dashboard", "/admin"];
+const PUBLIC_PATHS = [
+  "/login",
+  "/signup",
+  "/varify-code",
+  "/forgot-password",
+  "/2fa",
+];
+const PROTECTED_PATHS = ["/dashboard", "/admin", "/integration"];
 
 export function middleware(request: NextRequest) {
   const { cookies } = request;
   const token = cookies.get("token")?.value;
   const role = cookies.get("role")?.value;
   const path = request.nextUrl.pathname;
-  
+
   const isPublic = PUBLIC_PATHS.some((p) => path.startsWith(p));
   const isProtected = PROTECTED_PATHS.some((p) => path.startsWith(p));
 
@@ -67,6 +73,7 @@ export const config = {
     "/varify-code",
     "/forgot-password",
     "/2fa",
+    "/integration",
     "/dashboard/:path*",
     "/admin/:path*",
   ],

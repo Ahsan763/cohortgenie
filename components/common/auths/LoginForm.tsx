@@ -1,10 +1,12 @@
-import { Field, Form } from 'formik'
-import React from 'react'
-import InputField from '../InputField'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
+"use client";
+import { Field, Form } from "formik";
+import InputField from "../InputField";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 const LoginForm = ({ loading, values }: any) => {
+  const router = useRouter();
   return (
     <Form className="space-y-[2.6vh]">
       <InputField
@@ -40,7 +42,6 @@ const LoginForm = ({ loading, values }: any) => {
         </div>
       </div>
 
-
       <Button type="submit" disabled={loading} className="w-full mt-[2vh]">
         {loading ? "Signing in..." : "Sign in"}
       </Button>
@@ -51,9 +52,9 @@ const LoginForm = ({ loading, values }: any) => {
         <div className="flex-1 h-px bg-gray-200"></div>
       </div>
 
-
       <button
         type="button"
+        onClick={() => router.push("http://localhost:5000/auth/google")}
         className="w-full border border-[#E5E7EB] font-medium text-secondary-text py-3 rounded-md flex items-center justify-center gap-3 hover:bg-gray-50 transition cursor-pointer"
       >
         <img src="/images/google.svg" alt="Google" className="h-5 w-5" />
@@ -61,12 +62,15 @@ const LoginForm = ({ loading, values }: any) => {
       </button>
       <p className="text-center text-sm text-secondary-text mt-[4vh]">
         Don&apos;t have an account?{" "}
-        <Link href="/sign-up" className="text-[#9B6EEE] font-medium hover:underline">
+        <Link
+          href="/sign-up"
+          className="text-[#9B6EEE] font-medium hover:underline"
+        >
           Sign up
         </Link>
       </p>
     </Form>
-  )
-}
+  );
+};
 
-export default LoginForm
+export default LoginForm;

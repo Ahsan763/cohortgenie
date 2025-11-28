@@ -265,11 +265,7 @@ export const comparisonMontChartdata = [
 ];
 export const chartData2lines = [
   { month: "M1", april: 90, oct: 78 },
-  { month: "M2", april: 90, oct: 70 },
-  { month: "M3", april: 83, oct: 73 },
-  { month: "M4", april: 75, oct: 62 },
-  { month: "M5", april: 83, oct: 62 },
-  { month: "M6", april: 82, oct: 76 },
+
 ];
 export const MetricsComparisonTableData = [
   {

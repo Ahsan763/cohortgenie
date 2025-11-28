@@ -20,6 +20,8 @@ const ENDPOINTS: Endpoints = {
   SALESRECEIPT: "/quickbooks/salesreceipt",
   REFUNDRECEIPT: "/quickbooks/refundreceipt",
   CREDITMEMO: "/quickbooks/creditmemo",
+  //
+  COMPARISON: "/revenue/compare-periods",
 };
 
 export { BASE_URL, ENDPOINTS };

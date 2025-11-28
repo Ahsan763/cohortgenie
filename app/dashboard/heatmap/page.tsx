@@ -30,6 +30,7 @@ import {
   getMatrixStatsWithLabels,
   processMatrix,
 } from "@/lib/utils/getMatrixStats";
+import Error404 from "@/components/common/Error404";
 
 const ToggleGroup = ({ type, onValueChange, items }: any) => (
   <div className="flex bg-white py-1 px-2 rounded-lg border border-[#E5E7EB]">
@@ -136,187 +137,211 @@ const page = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-primary-text text-[22px] font-semibold">
-            Retention Heatmap
-          </h1>
-          <p className="text-secondary-text text-sm">
-            Visualize how your customer cohorts retain over time
-          </p>
-        </div>
-        <div className="flex items-center space-x-4">
-          <Select>
-            <SelectTrigger className="w-[120px]">
-              <Download />
-              <SelectValue placeholder="Export" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value={"csv"}>CSV</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-      <Card>
-        <CardContent>
-          <div className="flex items-center justify-between mb-6">
-            <h6 className="text-primary-text font-medium text-lg">
-              Cohort Retention Analysis
-            </h6>
-            <div className="flex gap-x-3">
-              <ToggleGroup
-                type={selectedType}
-                onValueChange={setSelectedType}
-                items={typeToggleItems}
-              />
-              {selectedType && selectedType !== "year" && (
+      {isError ? (
+        <Error404 />
+      ) : (
+        <>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-primary-text text-[22px] font-semibold">
+                Retention Heatmap
+              </h1>
+              <p className="text-secondary-text text-sm">
+                Visualize how your customer cohorts retain over time
+              </p>
+            </div>
+            <div className="flex items-center space-x-4">
+              <Select>
+                <SelectTrigger className="w-[120px]">
+                  <Download />
+                  <SelectValue placeholder="Export" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={"csv"}>CSV</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <Card>
+            <CardContent>
+              <div className="flex items-center justify-between mb-6">
+                <h6 className="text-primary-text font-medium text-lg">
+                  Cohort Retention Analysis
+                </h6>
+                <div className="flex gap-x-3">
+                  <ToggleGroup
+                    type={selectedType}
+                    onValueChange={setSelectedType}
+                    items={typeToggleItems}
+                  />
+                  {selectedType && selectedType !== "year" && (
+                    <Select
+                      value={selectedYear}
+                      onValueChange={(year) => {
+                        setSelectedYear(year);
+                      }}
+                    >
+                      <SelectTrigger className="w-[150px] text-secondary-text">
+                        <SelectValue
+                          placeholder="Select Year"
+                          className="text-secondary-text"
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {yearsWIthoutAll.map((year) => (
+                          <SelectItem
+                            key={year}
+                            value={year}
+                            className="text-secondary-text"
+                          >
+                            {year}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                </div>
+              </div>
+              {selectedType === "month" && (
+                <MonthlyCohortTable
+                  loading={loading}
+                  matrix={
+                    dashboardData?.data?.cohortGenie?.heatmap?.month
+                      ?.monthMatrix
+                  }
+                  labels={
+                    dashboardData?.data?.cohortGenie?.heatmap?.month
+                      ?.monthLabels
+                  }
+                />
+              )}
+              {selectedType === "quarter" && (
+                <QuartlyCohortTable
+                  loading={loading}
+                  matrix={
+                    dashboardData?.data?.cohortGenie?.heatmap?.quarter
+                      ?.quarterMatrix
+                  }
+                  labels={
+                    dashboardData?.data?.cohortGenie?.heatmap?.quarter
+                      ?.quarterLabels
+                  }
+                />
+              )}
+              {selectedType === "year" && (
+                <YearlyCohortTable
+                  loading={loading}
+                  matrix={
+                    dashboardData?.data?.cohortGenie?.heatmap?.year?.yearMatrix
+                  }
+                  labels={
+                    dashboardData?.data?.cohortGenie?.heatmap?.year?.years
+                  }
+                />
+              )}
+            </CardContent>
+          </Card>
+          <div className="grid grid-cols-3 gap-4 ">
+            <MetricCard
+              icon={retentionData.highest.icon}
+              secondaryText={
+                selectedYear === "year"
+                  ? `Highest: ${cohortPerformanceValues?.highestLabel}`
+                  : `Highest: ${cohortPerformanceValues?.highestLabel} ${selectedYear} ${selectedYear}`
+              }
+              primaryText={`${cohortPerformanceValues?.highestValue}% Retention`}
+              chartComponent={<Chart1 />}
+              loading={loading}
+            />
+            <MetricCard
+              icon={retentionData.lowest.icon}
+              secondaryText={`Lowest: ${cohortPerformanceValues?.lowestLabel} ${selectedYear}`}
+              primaryText={`${cohortPerformanceValues?.lowestValue}% Retention`}
+              chartComponent={<Chart2 />}
+              loading={loading}
+            />
+            <MetricCard
+              icon={retentionData.average.icon}
+              secondaryText={`Overall average: `}
+              primaryText={`${cohortPerformanceValues?.averageValue}%`}
+              chartComponent={
+                <ProgressRingChart
+                  value={cohortPerformanceValues?.averageValue}
+                />
+              }
+              loading={loading}
+            />
+          </div>
+          <Card>
+            <CardContent>
+              <div className="flex items-center justify-between mb-10">
+                <h2 className="font-medium text-lg text-primary-text">
+                  Cohort Retention Curves
+                </h2>
                 <Select
-                  value={selectedYear}
-                  onValueChange={(year) => {
-                    setSelectedYear(year);
+                  value={chartType}
+                  onValueChange={(type: any) => {
+                    setChartType(type);
                   }}
                 >
                   <SelectTrigger className="w-[150px] text-secondary-text">
                     <SelectValue
-                      placeholder="Select Year"
+                      placeholder="Select Value"
                       className="text-secondary-text"
                     />
                   </SelectTrigger>
                   <SelectContent>
-                    {yearsWIthoutAll.map((year) => (
-                      <SelectItem
-                        key={year}
-                        value={year}
-                        className="text-secondary-text"
-                      >
-                        {year}
-                      </SelectItem>
-                    ))}
+                    {selectedType === "month" ? (
+                      <>
+                        <SelectItem
+                          value={"all"}
+                          className="text-secondary-text"
+                        >
+                          All
+                        </SelectItem>
+                        <SelectItem
+                          value={"top"}
+                          className="text-secondary-text"
+                        >
+                          Top 3
+                        </SelectItem>
+                        <SelectItem
+                          value={"bottom"}
+                          className="text-secondary-text"
+                        >
+                          Bottom 3
+                        </SelectItem>
+                      </>
+                    ) : (
+                      <>
+                        <SelectItem
+                          value={"all"}
+                          className="text-secondary-text"
+                        >
+                          All
+                        </SelectItem>
+                        <SelectItem
+                          value={"top"}
+                          className="text-secondary-text"
+                        >
+                          Top
+                        </SelectItem>
+                        <SelectItem
+                          value={"bottom"}
+                          className="text-secondary-text"
+                        >
+                          Bottom
+                        </SelectItem>
+                      </>
+                    )}
                   </SelectContent>
                 </Select>
-              )}
-            </div>
-          </div>
-          {selectedType === "month" && (
-            <MonthlyCohortTable
-              loading={loading}
-              matrix={
-                dashboardData?.data?.cohortGenie?.heatmap?.month?.monthMatrix
-              }
-              labels={
-                dashboardData?.data?.cohortGenie?.heatmap?.month?.monthLabels
-              }
-            />
-          )}
-          {selectedType === "quarter" && (
-            <QuartlyCohortTable
-              loading={loading}
-              matrix={
-                dashboardData?.data?.cohortGenie?.heatmap?.quarter
-                  ?.quarterMatrix
-              }
-              labels={
-                dashboardData?.data?.cohortGenie?.heatmap?.quarter
-                  ?.quarterLabels
-              }
-            />
-          )}
-          {selectedType === "year" && (
-            <YearlyCohortTable
-              loading={loading}
-              matrix={
-                dashboardData?.data?.cohortGenie?.heatmap?.year?.yearMatrix
-              }
-              labels={dashboardData?.data?.cohortGenie?.heatmap?.year?.years}
-            />
-          )}
-        </CardContent>
-      </Card>
-      <div className="grid grid-cols-3 gap-4 ">
-        <MetricCard
-          icon={retentionData.highest.icon}
-          secondaryText={
-            selectedYear === "year"
-              ? `Highest: ${cohortPerformanceValues?.highestLabel}`
-              : `Highest: ${cohortPerformanceValues?.highestLabel} ${selectedYear} ${selectedYear}`
-          }
-          primaryText={`${cohortPerformanceValues?.highestValue}% Retention`}
-          chartComponent={<Chart1 />}
-          loading={loading}
-        />
-        <MetricCard
-          icon={retentionData.lowest.icon}
-          secondaryText={`Lowest: ${cohortPerformanceValues?.lowestLabel} ${selectedYear}`}
-          primaryText={`${cohortPerformanceValues?.lowestValue}% Retention`}
-          chartComponent={<Chart2 />}
-          loading={loading}
-        />
-        <MetricCard
-          icon={retentionData.average.icon}
-          secondaryText={`Overall average: `}
-          primaryText={`${cohortPerformanceValues?.averageValue}%`}
-          chartComponent={
-            <ProgressRingChart value={cohortPerformanceValues?.averageValue} />
-          }
-          loading={loading}
-        />
-      </div>
-      <Card>
-        <CardContent>
-          <div className="flex items-center justify-between mb-10">
-            <h2 className="font-medium text-lg text-primary-text">
-              Cohort Retention Curves
-            </h2>
-            <Select
-              value={chartType}
-              onValueChange={(type: any) => {
-                setChartType(type);
-              }}
-            >
-              <SelectTrigger className="w-[150px] text-secondary-text">
-                <SelectValue
-                  placeholder="Select Value"
-                  className="text-secondary-text"
-                />
-              </SelectTrigger>
-              <SelectContent>
-                {selectedType === "month" ? (
-                  <>
-                    <SelectItem value={"all"} className="text-secondary-text">
-                      All
-                    </SelectItem>
-                    <SelectItem value={"top"} className="text-secondary-text">
-                      Top 3
-                    </SelectItem>
-                    <SelectItem
-                      value={"bottom"}
-                      className="text-secondary-text"
-                    >
-                      Bottom 3
-                    </SelectItem>
-                  </>
-                ) : (
-                  <>
-                    <SelectItem value={"all"} className="text-secondary-text">
-                      All
-                    </SelectItem>
-                    <SelectItem value={"top"} className="text-secondary-text">
-                      Top
-                    </SelectItem>
-                    <SelectItem
-                      value={"bottom"}
-                      className="text-secondary-text"
-                    >
-                      Bottom
-                    </SelectItem>
-                  </>
-                )}
-              </SelectContent>
-            </Select>
-          </div>
-          <CohortRetentionLineChart data={chartValues} />
-        </CardContent>
-      </Card>
+              </div>
+              <CohortRetentionLineChart data={chartValues} loading={loading} />
+            </CardContent>
+          </Card>
+        </>
+      )}
     </div>
   );
 };

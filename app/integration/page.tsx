@@ -1,10 +1,8 @@
 "use client";
-
 import InteStep1 from "@/components/common/integrations/InteStep1";
 import InteStep2 from "@/components/common/integrations/InteStep2";
 import Image from "next/image";
-import { useParams, useSearchParams } from "next/navigation";
-
+import { useSearchParams } from "next/navigation";
 export default function IntegrationPage() {
   const params = useSearchParams();
   const step = params?.get("step");

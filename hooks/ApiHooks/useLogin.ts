@@ -78,6 +78,7 @@ export const useLogin = () => {
     setLoading(true);
     try {
       removeCookies("token");
+      localStorage.clear();
       toast.success("Logged out successfully");
       router.push("/login");
     } catch (error: any) {

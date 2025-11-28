@@ -13,36 +13,45 @@ import Image from "next/image";
 import { BellIcon, MenuIcon } from "@/icons";
 import { useLogin } from "@/hooks/ApiHooks/useLogin";
 import RootUserFlagCheck from "../RootUserFlagCheck";
+import { RootState } from "@/redux/store";
+import { useSelector } from "react-redux";
 
 const DashboardHeader = ({ collapsed, setCollapsed }: any) => {
   const { handleLogout } = useLogin();
+  const userData = useSelector((state: RootState) => state.user.user);
+  const initials = userData?.name
+    ?.split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase();
+  console.log("🚀 ~ DashboardHeader ~ userData:", userData?.name);
   return (
     <header className="sticky top-0 z-40 w-full border-b border-b-[#E5E7EB] bg-white py-3">
-      <RootUserFlagCheck/>
+      <RootUserFlagCheck />
       <div className="container-fluid">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-x-3">
             {collapsed && (
               <div
                 className={`cursor-pointer`}
-                onClick={() => setCollapsed((prev:any) => !prev)}
+                onClick={() => setCollapsed((prev: any) => !prev)}
               >
                 <MenuIcon color="#6B7280" />
               </div>
             )}
 
-            <div className="relative border border-[#E5E7EB] rounded-lg py-1 flex items-center px-4 w-full max-w-[380px]">
-              <Search className="text-secondary-text" />
+            <div className="relative border border-[#E5E7EB] rounded-lg py-1 flex items-center px-4 w-[380px]">
+              <Search className="text-secondary-text shrink-0" />
               <Input
                 type="search"
                 placeholder="Search analytics, cohorts, reports..."
-                className="text-secondary-text border-none outline-none shadow-none focus-visible:ring-0"
+                className="text-secondary-text border-none outline-none shadow-none focus-visible:ring-0 w-full"
               />
             </div>
           </div>
 
           <div className="flex items-center gap-x-4">
-            <DropdownMenu>
+            {/* <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <div className="relative cursor-pointer">
                   <span className="absolute right-0 top-0 flex h-2.5 w-2.5">
@@ -59,35 +68,30 @@ const DashboardHeader = ({ collapsed, setCollapsed }: any) => {
                 <DropdownMenuItem>Account billing updated.</DropdownMenuItem>
                 <DropdownMenuItem>Task 'X' is overdue.</DropdownMenuItem>
               </DropdownMenuContent>
-            </DropdownMenu>
+            </DropdownMenu> */}
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <div className="h-8 w-8 rounded-full cursor-pointer">
-                  <Image
-                    src="/images/profile.png"
-                    width={32}
-                    height={32}
-                    alt=""
-                    className="w-full h-full rounded-full"
-                  />
+                <div className="h-11 w-11 text-lg text-primary-text rounded-full cursor-pointer bg-gray-100 flex items-center justify-center">
+                  {initials}
                 </div>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">Jane Doe</p>
+                    <p className="text-sm font-medium leading-none">
+                      {userData?.name}
+                    </p>
                     <p className="text-xs leading-none text-muted-foreground">
-                      jane@example.com
+                      {userData?.email}
                     </p>
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuItem>Settings</DropdownMenuItem>
-                <DropdownMenuItem>Billing</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout}>Log out</DropdownMenuItem>
+
+                <DropdownMenuItem onClick={handleLogout}>
+                  Log out
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

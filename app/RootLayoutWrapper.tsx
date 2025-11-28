@@ -6,6 +6,7 @@ import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persist
 import { Providers } from "@/redux/Providers";
 import { useState } from "react";
 import RootUserFlagCheck from "@/components/common/RootUserFlagCheck";
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 const RootLayoutWrapper = ({
   children,
@@ -35,6 +36,8 @@ const RootLayoutWrapper = ({
           persistOptions={{ persister }}
         >
           <Providers>{children}</Providers>
+          <ReactQueryDevtools initialIsOpen={false} />
+
         </PersistQueryClientProvider>
       ) : (
         <Providers> {children}</Providers>

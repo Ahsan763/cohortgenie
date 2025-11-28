@@ -13,17 +13,17 @@ import Link from "next/link";
 
 export default function Varify2FAPage() {
   const [loading, setLoading] = useState(false);
-  const { Varify2FA } = useLogin();
-  const handleSubmit = async (values: any) => {
-    try {
-      setLoading(true);
-      await Varify2FA(values);
-      setLoading(false);
-    } catch (error) {
-      console.error("Login Error:", error);
-      setLoading(false);
-    }
-  };
+  // const { Varify2FA } = useLogin();
+  // const handleSubmit = async (values: any) => {
+  //   try {
+  //     setLoading(true);
+  //     await Varify2FA(values);
+  //     setLoading(false);
+  //   } catch (error) {
+  //     console.error("Login Error:", error);
+  //     setLoading(false);
+  //   }
+  // };
 
   return (
     <div className="min-h-screen flex">
@@ -37,7 +37,7 @@ export default function Varify2FAPage() {
           {/* <p className="text-center text-secondary-text mb-[4.3vh]">
             Sign in to access your analytics
           </p> */}
-          <Formik
+          {/* <Formik
             initialValues={{
               otp: "",
             }}
@@ -56,7 +56,7 @@ export default function Varify2FAPage() {
                 </Button>
               </Form>
             )}
-          </Formik>
+          </Formik> */}
         </div>
         <div className="flex justify-between items-center text-xs text-secondary-text bottom-[3.5vh] absolute w-full left-0 px-[4vw]">
           <Link href="/privacy-policy" className="hover:underline">

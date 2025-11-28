@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, EffectFade, Autoplay } from "swiper/modules";
 import Image from "next/image";
@@ -39,24 +39,18 @@ const LoginsSlider: FC<LoginsSliderProps> = ({ slides }) => {
               className="w-full h-auto"
             />
             <div className="w-full max-w-[570px] text-white">
-              <h2 className="text-4xl font-semibold mb-3">
-                {item.title}
-              </h2>
+              <h2 className="text-4xl font-semibold mb-3">{item.title}</h2>
 
-              <p className="text-base font-normal">
-                {item.desc}
-              </p>
+              <p className="text-base font-normal">{item.desc}</p>
             </div>
-
           </div>
         </SwiperSlide>
       ))}
       {/* mt-[16vh] */}
       {/* <div className="custom-pagination flex justify-center gap-x-2"></div> */}
       {/* <div className="custom-pagination absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2 h-2 w-full"></div> */}
-
     </Swiper>
-  )
-}
+  );
+};
 
-export default LoginsSlider
+export default LoginsSlider;

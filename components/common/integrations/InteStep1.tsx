@@ -18,10 +18,12 @@ import {
 } from "lucide-react";
 import { CheckIcon, DataIcon, FlowerIcon, SearchStatusIcon } from "@/icons";
 import Image from "next/image";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useGetUser } from "@/services/DashboardServices";
+import { loginn } from "@/redux/userSlice";
 const ProcessStep = ({
   icon: Icon,
   title,
@@ -54,8 +56,23 @@ export const quickbooksAuth = async () => {
   }
 };
 const InteStep1 = () => {
+  const searchparam = useSearchParams();
+  const token = searchparam.get("token");
   const userData = useSelector((state: RootState) => state.user.user);
   const router = useRouter();
+  const dispatch = useDispatch();
+  const { getUser } = useGetUser();
+  useEffect(() => {
+    if (token) {
+      const fetchUser = async () => {
+        const { res, data } = await getUser();
+        if (res?.status === 200) {
+          dispatch(loginn(data?.user));
+        }
+      };
+      fetchUser();
+    }
+  }, [token]);
   useEffect(() => {
     if (userData?.connection_flag === true) {
       router.push("/dashboard/home");

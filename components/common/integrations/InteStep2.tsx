@@ -95,9 +95,7 @@ export default function InteStep2() {
   const [progressValue, setProgressValue] = useState(0);
   const router = useRouter();
   const hasRun = useRef(false);
-
   const { getUser } = useGetUser();
-
   useEffect(() => {
     const fetchUser = async () => {
       const { res, data } = await getUser();
@@ -136,6 +134,13 @@ export default function InteStep2() {
         setStep2("completed");
         setStep3("loading");
         setTimeout(() => {
+          const fetchUser = async () => {
+            const { res, data } = await getUser();
+            if (res?.status === 200) {
+              setUserData(data.user);
+            }
+          };
+          fetchUser();
           setStep3("completed");
           router.push("/dashboard/home");
         }, 2000);

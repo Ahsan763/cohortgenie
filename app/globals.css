@@ -149,7 +149,7 @@
   }
 }
 .loginBg{
-  background: url("/images/loginBg.png") no-repeat center;
+  background: url("/images/loginbg.png") no-repeat center;
   background-size: cover;
 }
 .swiper-pagination-bullet{
