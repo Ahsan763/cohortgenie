@@ -41,7 +41,12 @@ export default function YearlyCohortTable({ matrix, labels, loading }: any) {
   const alignedMatrix = matrix?.map((row: any, rIndex: number) => {
     return row.slice(rIndex);
   });
-  console.log("🚀 ~ YearlyCohortTable ~ alignedMatrix:", alignedMatrix);
+
+  const yearHeaders = years.slice(0, alignedMatrix?.[0]?.length || 0);
+  const numDataColumns = yearHeaders.length || 0;
+  const gridTemplateStyle = {
+    gridTemplateColumns: `minmax(80px, 1fr) repeat(${numDataColumns}, minmax(80px, 1fr))`,
+  };
 
   return (
     <div className="w-full overflow-auto">
@@ -49,30 +54,33 @@ export default function YearlyCohortTable({ matrix, labels, loading }: any) {
         <Skeleton className="h-[235px]" />
       ) : (
         <>
-          <div className="grid grid-cols-5 gap-2 mb-3 px-2 bg-[#F9FAFB] rounded-md">
-            <div className="rounded-md py-2.5 px-2 text-center text-sm ">
+          <div
+            className="gap-2 mb-3 px-2 bg-[#F9FAFB] rounded-md"
+            style={gridTemplateStyle}
+          >
+            <div className="rounded-md py-2.5 px-2 text-center text-sm grid-flow-col">
               Cohort
             </div>
-            {years.map((m) => (
+            {yearHeaders.map((m) => (
               <div
                 key={m}
-                className="rounded-md py-2.5 px-2 text-center text-sm "
+                className="rounded-md py-2.5 px-2 text-center text-sm"
               >
                 {m}
               </div>
             ))}
           </div>
+
           <div className="space-y-2">
             {alignedMatrix?.map((row: any, rIndex: any) => (
-              <div key={rIndex} className="grid grid-cols-5 gap-2">
-                <div className="text-sm flex items-center justify-center text-primary-text">
+              <div key={rIndex} className="gap-2" style={gridTemplateStyle}>
+                <div className="text-xs md:text-sm flex items-center justify-center text-primary-text">
                   {labels[rIndex]}
                 </div>
-
                 {row.map((value: any, cIndex: any) => (
                   <div
                     key={cIndex}
-                    className={`rounded-md py-2.5 px-2 text-center text-sm   ${getColor(value)}`}
+                    className={`rounded-md py-2.5 px-2 text-center text-xs md:text-sm ${getColor(value)}`}
                   >
                     {value !== 0 ? `${value}%` : ""}
                   </div>

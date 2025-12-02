@@ -9,7 +9,14 @@ import {
   quarters,
   yearsOnly,
 } from "@/constants";
-
+import {
+  Chart1,
+  Chart2,
+  MontCHartdata,
+  retentionData,
+  typeToggleItems,
+  yearsWIthoutAll,
+} from "@/constants";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import FiltersSheet from "@/components/common/FiltersSheet";
@@ -17,6 +24,9 @@ import { SlidersHorizontal } from "lucide-react";
 import toast from "react-hot-toast";
 import { useGetComparison } from "@/hooks/ReactQueryHooks/comparison";
 import Error404 from "@/components/common/Error404";
+import Error403 from "@/components/common/Error403";
+import MetricCard from "@/components/common/MetricCard";
+import ProgressRingChart from "@/components/common/ProgressRingChart";
 const getPeriodLabel = (periodString: any, type: any) => {
   // Agar year type hai ya periodString mein "-" nahi hai
   if (type === "year" || !periodString?.includes("-")) {
@@ -89,7 +99,8 @@ const page = () => {
   //   if (!date) return null;
   //   return `${date.getMonth() + 1}-${date.getFullYear()}`;
   // };
-
+  const [cohortPerformanceValues, setCohortPerformanceValues] = useState<any>();
+  console.log("🚀 ~ page ~ cohortPerformanceValues:", cohortPerformanceValues);
   const [payload, setPayload] = useState<any>({});
   console.log("🚀 ~ page ~ payload:", payload);
   const [chartData, setChartData] = useState([]);
@@ -295,7 +306,7 @@ const page = () => {
   return (
     <div className="space-y-8">
       {isError ? (
-        <Error404 />
+        <Error403 />
       ) : (
         <>
           <FiltersSheet
@@ -346,6 +357,7 @@ const page = () => {
               isLoading={isLoading}
             />
           </Card>
+
           <Card>
             <CardContent>
               <MetricsComparisonTable
@@ -356,6 +368,40 @@ const page = () => {
               />
             </CardContent>
           </Card>
+
+          {/* {!data ? (
+            <Card>
+              <CardContent>
+                <h2 className="text-xl">
+                  Choose periods and filter types to view cards.
+                </h2>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+              <MetricCard
+                icon={retentionData.highest.icon}
+                secondaryText={"Retention improved by"}
+                primaryText={`${cohortPerformanceValues?.highestValue}% Retention`}
+                chartComponent={<Chart1 />}
+                loading={isLoading}
+              />
+              <MetricCard
+                icon={retentionData.lowest.icon}
+                secondaryText={`Upsells grew by`}
+                primaryText={`Churn decreased by`}
+                chartComponent={<Chart1 />}
+                loading={isLoading}
+              />
+              <MetricCard
+                icon={retentionData.average.icon}
+                secondaryText={`Overall average: `}
+                primaryText={`${cohortPerformanceValues?.averageValue}%`}
+                chartComponent={<Chart2 />}
+                loading={isLoading}
+              />
+            </div>
+          )} */}
         </>
       )}
     </div>

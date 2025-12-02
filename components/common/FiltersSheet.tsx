@@ -43,20 +43,19 @@ const FiltersSheet = ({
 }: any) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="w-full sm:max-w-[760px] rounded-2xl p-8 shadow-xl border border-gray-100">
-        <DialogHeader className="mb-6">
-          <DialogTitle className="text-xl font-semibold text-gray-900">
+      <DialogContent className="w-full sm:max-w-[760px] rounded-2xl p-8 shadow-xl border border-gray-100 max-h-[85vh] overflow-y-auto">
+        <DialogHeader className="mb-2 sm:mb-4 xl:mb-6">
+          <DialogTitle className="text-base md:text-lg xl:text-xl font-semibold text-primary-text">
             Compare Data by Applying Filters
           </DialogTitle>
-          <DialogDescription className="text-gray-500">
+          <DialogDescription className="text-sm md:text-base text-secondary-text">
             Choose periods and filter types to compare analytics on the
             dashboard.
           </DialogDescription>
         </DialogHeader>
-
-        <div className="space-y-10">
+        <div className="space-y-3 lg:space-y-5 2xl:space-y-10 h-full">
           <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-            <h5 className="text-base font-semibold text-gray-800 mb-4">
+            <h5 className="text-sm md:text-base font-semibold text-primary-text mb-4">
               Select Filter Type
             </h5>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -73,7 +72,7 @@ const FiltersSheet = ({
             </div>
           </div>
           <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-            <h5 className="text-base font-semibold text-gray-800 mb-6">
+            <h5 className="text-sm md:text-base font-semibold text-primary-text mb-6">
               Period 1 (Base Comparison)
             </h5>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
@@ -145,7 +144,7 @@ const FiltersSheet = ({
             </div>
           </div>
           <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-            <h5 className="text-base font-semibold text-gray-800 mb-6">
+            <h5 className="text-sm md:text-base font-semibold text-primary-text mb-6">
               Period 2 (Compare With)
             </h5>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
@@ -216,7 +215,7 @@ const FiltersSheet = ({
               )}
             </div>
           </div>
-          <div className="flex items-center justify-end gap-4">
+          <div className="flex items-center justify-end gap-4 mt-3.5 sm:mt-0">
             <Button onClick={() => setOpen(false)} variant={"outline"}>
               Cancel
             </Button>

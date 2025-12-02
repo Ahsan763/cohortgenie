@@ -1,5 +1,3 @@
-const BASE_URL: string = "http://localhost:5000/be";
-
 interface Endpoints {
   [key: string]: string;
 }
@@ -24,4 +22,4 @@ const ENDPOINTS: Endpoints = {
   COMPARISON: "/revenue/compare-periods",
 };
 
-export { BASE_URL, ENDPOINTS };
+export { ENDPOINTS };

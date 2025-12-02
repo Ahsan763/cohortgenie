@@ -1,25 +1,45 @@
 "use client";
-
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState, useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { CustomerRetentionChartData } from "@/constants";
 import {
   BarChart,
   Bar,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
 
+const DEFAULT_TICK_STYLE = { fontSize: 14 };
+const SMALL_TICK_STYLE = { fontSize: 12 };
+
 export default function CustomerRetentionChart({ data, loading }: any) {
+  const [tickStyle, setTickStyle] = useState(DEFAULT_TICK_STYLE);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 1024) {
+        setTickStyle(SMALL_TICK_STYLE);
+      } else {
+        setTickStyle(DEFAULT_TICK_STYLE);
+      }
+    };
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <>
       {loading ? (
-        <Skeleton className="h-[400px] w-full" />
+        <Skeleton className="h-[300px] w-full" />
       ) : (
-        <div className="h-[300px] w-full -translate-x-[0.4vw]">
+        <div className="h-[300px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data}>
               <defs>
@@ -28,18 +48,21 @@ export default function CustomerRetentionChart({ data, loading }: any) {
                   <stop offset="100%" stopColor="#A78BFA" stopOpacity={0.2} />
                 </linearGradient>
               </defs>
-              {/* <CartesianGrid
-            // strokeDasharray="3 3"
-            vertical={true} // 👈 enables vertical grid
-            horizontal={true} // 👈 enables horizontal grid
-            opacity={0.3}
-          /> */}
-              <XAxis dataKey="period" axisLine={false} tickLine={false} />
+              
+              <XAxis 
+                dataKey="period" 
+                axisLine={false} 
+                tickLine={false} 
+                tick={tickStyle} 
+              />
+              
               <YAxis
                 axisLine={false}
                 tickLine={false}
                 tickFormatter={(value) => `$${value}`}
+                tick={tickStyle}
               />
+              
               <Tooltip
                 cursor={false}
                 contentStyle={{
@@ -48,7 +71,6 @@ export default function CustomerRetentionChart({ data, loading }: any) {
                   border: "1px solid #eee",
                   color: "#9B6EEE",
                 }}
-                
                 formatter={(value: number) => [`Retention : $${value}`]}
               />
               <Bar dataKey="netRevenue" fill="#C9B1F6" radius={[6, 6, 0, 0]} />

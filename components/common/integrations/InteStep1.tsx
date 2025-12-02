@@ -23,7 +23,7 @@ import { RootState } from "@/redux/store";
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useGetUser } from "@/services/DashboardServices";
-import { loginn } from "@/redux/userSlice";
+import { loginDemo, loginn } from "@/redux/userSlice";
 const ProcessStep = ({
   icon: Icon,
   title,
@@ -81,6 +81,16 @@ const InteStep1 = () => {
   const loginWithQuickbooks = () => {
     window.location.href = `http://localhost:5000/api/quickbooks/auth?user_id=${userData?._id}`;
   };
+  // const handleDemoLogin = () => {
+  //   const fetchUser = async () => {
+  //     const { res, data } = await getUser();
+  //     if (res?.status === 200) {
+  //       dispatch(loginDemo(data?.user));
+  //     }
+  //   };
+  //   fetchUser();
+  //   router.push("/dashboard/home");
+  // };
   return (
     <>
       <div className="flex items-center justify-center space-x-2 mb-4">
@@ -116,17 +126,14 @@ const InteStep1 = () => {
             Sync customer transactions, revenue data, and billing information to
             analyze retention metrics.
           </p>
-          <div className="grid grid-cols-2 gap-x-6">
+          <div className="flex justify-end">
             <Button className="" variant={"main"} onClick={loginWithQuickbooks}>
               <CircleCheckBig className="mr-2 h-5 w-5" />
               Connect QuickBooks
             </Button>
-            <Button
-              variant="outline"
-              onClick={() => router.push(`/dashboard/home?demo=true`)}
-            >
+            {/* <Button variant="outline" onClick={handleDemoLogin}>
               Skip / Try Demo
-            </Button>
+            </Button> */}
           </div>
         </CardContent>
       </Card>

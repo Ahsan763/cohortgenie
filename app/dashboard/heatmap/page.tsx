@@ -17,12 +17,11 @@ import {
   yearsWIthoutAll,
 } from "@/constants";
 import { Download } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import MonthlyCohortTable from "@/components/common/MonthlyCohortTable";
 import YearlyCohortTable from "@/components/common/dashboard/YearlyCohortTable";
 import QuartlyCohortTable from "@/components/common/dashboard/QuartlyCohortTable";
 import { useGetDashboard } from "@/hooks/ReactQueryHooks/dashboard";
-import { InfoIcon, RankingIcon, StarIcon } from "@/icons";
 import MetricCard from "@/components/common/MetricCard";
 import ProgressRingChart from "@/components/common/ProgressRingChart";
 import CohortRetentionLineChart from "@/components/common/dashboard/CohortRetentionLineChart";
@@ -30,7 +29,7 @@ import {
   getMatrixStatsWithLabels,
   processMatrix,
 } from "@/lib/utils/getMatrixStats";
-import Error404 from "@/components/common/Error404";
+import Error403 from "@/components/common/Error403";
 
 const ToggleGroup = ({ type, onValueChange, items }: any) => (
   <div className="flex bg-white py-1 px-2 rounded-lg border border-[#E5E7EB]">
@@ -138,7 +137,7 @@ const page = () => {
   return (
     <div className="space-y-6">
       {isError ? (
-        <Error404 />
+        <Error403 />
       ) : (
         <>
           <div className="flex items-center justify-between">
@@ -164,11 +163,11 @@ const page = () => {
           </div>
           <Card>
             <CardContent>
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex flex-col gap-y-4 md:flex-row md:items-center md:justify-between mb-6">
                 <h6 className="text-primary-text font-medium text-lg">
                   Cohort Retention Analysis
                 </h6>
-                <div className="flex gap-x-3">
+                <div className="flex flex-wrap sm:flex-nowrap gap-y-2 gap-x-3">
                   <ToggleGroup
                     type={selectedType}
                     onValueChange={setSelectedType}
@@ -241,13 +240,13 @@ const page = () => {
               )}
             </CardContent>
           </Card>
-          <div className="grid grid-cols-3 gap-4 ">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             <MetricCard
               icon={retentionData.highest.icon}
               secondaryText={
                 selectedYear === "year"
                   ? `Highest: ${cohortPerformanceValues?.highestLabel}`
-                  : `Highest: ${cohortPerformanceValues?.highestLabel} ${selectedYear} ${selectedYear}`
+                  : `Highest: ${cohortPerformanceValues?.highestLabel} ${selectedYear}`
               }
               primaryText={`${cohortPerformanceValues?.highestValue}% Retention`}
               chartComponent={<Chart1 />}
@@ -274,7 +273,7 @@ const page = () => {
           </div>
           <Card>
             <CardContent>
-              <div className="flex items-center justify-between mb-10">
+              <div className="flex flex-wrap gap-y-2 items-center justify-between mb-10">
                 <h2 className="font-medium text-lg text-primary-text">
                   Cohort Retention Curves
                 </h2>

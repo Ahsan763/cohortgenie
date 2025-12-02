@@ -5,16 +5,15 @@ interface User {
   id: string;
   name: string;
   email: string;
+  isDemo?: boolean;
   notifications?: any[];
-  [key: string]: any; // To allow additional dynamic properties
+  [key: string]: any;
 }
 
 interface UserState {
   user: User | null;
-  // permissions: [];
 }
 
-// Function to safely access localStorage
 const getLocalStorageItem = <T>(key: string): T | null => {
   if (typeof window !== "undefined") {
     const item = localStorage.getItem(key);
@@ -37,7 +36,6 @@ const removeLocalStorageItem = (key: string): void => {
 
 const initialState: UserState = {
   user: getLocalStorageItem<User>("user"),
-  // permissions: getLocalStorageItem("permissions") || [],
 };
 
 export const userSlice = createSlice({
@@ -45,11 +43,15 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     loginn: (state, action: any) => {
-      state.user = action.payload;
-      setLocalStorageItem("user", action.payload);
+      state.user = { ...action.payload };
+      setLocalStorageItem("user", state.user);
+    },
+    loginDemo: (state, action: any) => {
+      state.user = { ...action.payload };
+      setLocalStorageItem("user", state.user);
     },
     signup: (state, action: PayloadAction<User>) => {
-      state.user = action.payload;
+      state.user = { ...action.payload };
       setLocalStorageItem("user", action.payload);
     },
     updateConnectionFlag: (state, action: any) => {
@@ -58,13 +60,12 @@ export const userSlice = createSlice({
       }
     },
     logout: (state) => {
-      // state.user = null;
       ["user"].forEach(removeLocalStorageItem);
     },
   },
 });
 
-export const { loginn, signup, logout, updateConnectionFlag } =
+export const { loginn, signup, logout, loginDemo, updateConnectionFlag } =
   userSlice.actions;
 
 export default userSlice.reducer;

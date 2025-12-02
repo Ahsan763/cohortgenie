@@ -32,23 +32,30 @@ import { useGetDashboard } from "@/hooks/ReactQueryHooks/dashboard";
 import Error404 from "@/components/common/Error404";
 import { useRouter, useSearchParams } from "next/navigation";
 import RevenueWaterfallChart from "@/components/common/dashboard/RevenueWaterfallChart";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useGetUser } from "@/services/DashboardServices";
 import { loginn } from "@/redux/userSlice";
+import Error403 from "@/components/common/Error403";
+import { RootState } from "@/redux/store";
 const page = () => {
+  const userData = useSelector((state: RootState) => state.user.user);
+  const isDemo = userData?.isDemo === true;
+  console.log("🚀 ~ page ~ isDemo:", isDemo);
   const router = useRouter();
   const searchparam = useSearchParams();
+  const currentYear = new Date().getFullYear().toString();
+  const currentMonth = (new Date().getMonth() + 1).toString();
   const loginwithgoogle = searchparam.get("loginwithgoogle");
-  const [selectedYear, setSelectedYear] = useState("2025");
+  const [selectedYear, setSelectedYear] = useState(currentYear);
   const [selectedType, setSelectedType] = useState("month");
-  const [selectedMonth, setSelectedMonth] = useState("1");
+  const [selectedMonth, setSelectedMonth] = useState(currentMonth);
   const [selectedQuarter, setSelectedQuarter] = useState("");
   const dispatch = useDispatch();
   const { getUser } = useGetUser();
   const [filters, setFilters] = useState({
-    selectedYear: "2025",
+    selectedYear: currentYear,
     selectedType: "month",
-    selectedMonth: "1",
+    selectedMonth: currentMonth,
     selectedQuarter: "",
   });
   const [chartValues, setChartValues] = useState([]);
@@ -58,6 +65,7 @@ const page = () => {
     isLoading: loading,
     isError,
   } = useGetDashboard(filters);
+
   if (loginwithgoogle) {
     const fetchUser = async () => {
       const { res, data } = await getUser();
@@ -129,29 +137,26 @@ const page = () => {
   return (
     <div className="space-y-6">
       {isError ? (
-        <Error404 />
+        <Error403 />
       ) : (
         <>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap gap-y-4 gap-x-3 items-center justify-between">
             <div>
-              <h1 className="text-primary-text text-[22px] font-semibold">
-                Welcome back, Sarah 👋
+              <h1 className="text-primary-text text-xl lg:text-[22px] font-semibold">
+                Welcome back, {userData?.name} 👋
               </h1>
               <p className="text-secondary-text text-sm">
                 Here's your business health at a glance
               </p>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 w-full xl:max-w-[600] justify-end">
               <Select
                 value={selectedYear}
                 onValueChange={(year) => {
                   setSelectedYear(year);
-                  // setSelectedType("");
-                  // setSelectedMonth("");
-                  // setSelectedQuarter("");
                 }}
               >
-                <SelectTrigger className="w-[150px]">
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select Year" />
                 </SelectTrigger>
                 <SelectContent>
@@ -162,7 +167,6 @@ const page = () => {
                   ))}
                 </SelectContent>
               </Select>
-
               {selectedYear && selectedYear !== "All" && (
                 <Select
                   value={selectedType}
@@ -172,7 +176,7 @@ const page = () => {
                     setSelectedQuarter("");
                   }}
                 >
-                  <SelectTrigger className="w-[150px]">
+                  <SelectTrigger className="w-full ">
                     <SelectValue placeholder="Select Type" />
                   </SelectTrigger>
                   <SelectContent>
@@ -182,10 +186,9 @@ const page = () => {
                   </SelectContent>
                 </Select>
               )}
-
               {selectedType === "month" && (
                 <Select value={selectedMonth} onValueChange={setSelectedMonth}>
-                  <SelectTrigger className="w-[150px]">
+                  <SelectTrigger className="w-full ">
                     <SelectValue placeholder="Select Month" />
                   </SelectTrigger>
                   <SelectContent>
@@ -197,13 +200,12 @@ const page = () => {
                   </SelectContent>
                 </Select>
               )}
-
               {selectedType === "quarter" && (
                 <Select
                   value={selectedQuarter}
                   onValueChange={setSelectedQuarter}
                 >
-                  <SelectTrigger className="w-[150px]">
+                  <SelectTrigger className="w-full ">
                     <SelectValue placeholder="Select Quarter" />
                   </SelectTrigger>
                   <SelectContent>
@@ -216,7 +218,7 @@ const page = () => {
                 </Select>
               )}
               <Select>
-                <SelectTrigger className="w-[120px]">
+                <SelectTrigger className="w-full ">
                   <Download />
                   <SelectValue placeholder="Export" />
                 </SelectTrigger>
@@ -226,9 +228,8 @@ const page = () => {
               </Select>
             </div>
           </div>
-          {/* header filters edn */}
-          <Card>
-            <CardContent className="grid grid-cols-4 px-0">
+          <Card className="py-0 sm:py-3">
+            <CardContent className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 px-0">
               {statsData.map((stat, index) => (
                 <StatsCard
                   stat={stat}
@@ -246,34 +247,35 @@ const page = () => {
               ))}
             </CardContent>
           </Card>
-          <div className="grid grid-cols-3 gap-6">
-            <Card className="col-span-2">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 2xl:grid-cols-3">
+            <Card className="col-span-1 md:col-span-2">
               <CardHeader>
                 <CardTitle> Customer Revenue by Cohort</CardTitle>
               </CardHeader>
-              <CardContent className="mt-auto">
+              <CardContent className="mt-auto px-0 sm:px-3 lg:px-5">
                 <CustomerRetentionChart data={chartValues} loading={loading} />
               </CardContent>
             </Card>
-            <Card>
+            <Card className="col-span-1">
               <CardHeader>
                 <CardTitle> Revenue Waterfall</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="mt-auto px-0 sm:px-3 lg:px-5">
                 <RevenueWaterfallChart rawData={rawData} />
               </CardContent>
             </Card>
-            <Card className="col-span-2">
-              <CardHeader className="flex items-center justify-between flex-row">
+
+            <Card className="col-span-1  md:col-span-2">
+              <CardHeader className="flex items-center flex-wrap justify-between flex-row">
                 <CardTitle> Cohort Retention Heatmap </CardTitle>
                 <Link
                   href={"/dashboard/heatmap"}
-                  className="flex items-center gap-x-2 text-[#9B6EEE] hover:underline underline-offset-2"
+                  className="flex items-center gap-x-2 text-sm md:text-base text-[#9B6EEE] hover:underline underline-offset-2"
                 >
-                  View Full Heatmap <MoveRight />
+                  View Full Heatmap <MoveRight size={16} />
                 </Link>
               </CardHeader>
-              <CardContent className="mt-auto">
+              <CardContent className="mt-auto px-1.5 sm:px-3 lg:px-5">
                 {selectedYear === "All" && (
                   <YearlyCohortTable
                     matrix={
@@ -327,13 +329,12 @@ const page = () => {
                 )}
               </CardContent>
             </Card>
-            <Card>
+            <Card className="md:row-start-2 md:col-start-2 2xl:col-start-3  col-span-1">
               <CardHeader>
                 <CardTitle className="text-lg font-semibold">
                   Key Insights
                 </CardTitle>
               </CardHeader>
-
               <CardContent className="space-y-6">
                 <InsightsCard
                   data={dashboardData?.data?.cohortGenie?.insights}
@@ -342,9 +343,15 @@ const page = () => {
               </CardContent>
             </Card>
           </div>
-          <div className="relative w-full rounded-md border border-[#9B6EEE] bg-[#9B6EEE1A] px-6 py-4 flex items-center justify-between overflow-hidden">
+          <div
+            className="relative w-full rounded-md border border-[#9B6EEE] bg-[#9B6EEE1A] px-6 py-4 
+    flex flex-col md:flex-row md:items-center justify-between gap-4 overflow-hidden"
+          >
             <div className="flex items-start gap-3">
-              <AlertCircle size={18} className="text-[#9B6EEE] translate-y-1" />
+              <AlertCircle
+                size={18}
+                className="text-[#9B6EEE] translate-y-1 shrink-0"
+              />
               <div className="flex flex-col gap-y-1">
                 <span className="text-[#9B6EEE] font-medium text-sm">
                   Explore More Insights
@@ -355,7 +362,7 @@ const page = () => {
                 </span>
               </div>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col sm:flex-row gap-3 md:flex-none">
               <Button
                 className="text-sm"
                 variant={"main"}

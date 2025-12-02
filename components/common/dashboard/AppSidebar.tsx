@@ -2,14 +2,7 @@
 import biglogo from "../../../public/images/Logo.svg";
 import logosm from "../../../public/images/logo-sm.svg";
 import { useState } from "react";
-import LinkNext from "next/link";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar";
+
 import {
   Tooltip,
   TooltipContent,
@@ -22,14 +15,13 @@ import {
   ComparisonIcon,
   HeatMapFillIcon,
   HeatMapIcon,
-  HelpIcon,
   HomeFillIcon,
   HomeIcon,
   ItegrationsFillIcon,
   ItegrationsIcon,
   MenuIcon,
 } from "@/icons";
-import { useParams, usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 const items = [
@@ -97,14 +89,11 @@ const MenuItem = ({ item, collapsed }: any) => {
   );
 };
 export function AppSidebar({ className, collapsed, setCollapsed }: any) {
-  const params = useSearchParams();
-
   return (
     <TooltipProvider>
       <aside
-        className={`fixed h-screen bg-white border-r border-[#E5E7EB] flex flex-col justify-between transition-all duration-300 z-50 ${className}`}
+        className={`fixed h-screen bg-white border-r border-[#E5E7EB] flex flex-col justify-between transition-all duration-300 z-50 ${collapsed ? "-left-full lg:left-0" : ""} ${className}`}
       >
-        {/* Menu Items */}
         <div className="flex-1">
           <div
             className={`pt-6 pb-4 flex items-center justify-between relative  ${collapsed ? "px-2 justify-center" : "px-5"}`}
@@ -117,8 +106,8 @@ export function AppSidebar({ className, collapsed, setCollapsed }: any) {
               className={`h-[29px]! ${collapsed ? "w-8" : "w-auto"}`}
             />
             <div
-              className={`cursor-pointer ${collapsed ? "absolute top-0 right-0 hidden" : ""}`}
-              onClick={() => setCollapsed((prev:any) => !prev)}
+              className={`cursor-pointer  ${collapsed ? "absolute top-0 right-0 hidden" : ""}`}
+              onClick={() => setCollapsed((prev: any) => !prev)}
             >
               <MenuIcon color="#6B7280" />
             </div>

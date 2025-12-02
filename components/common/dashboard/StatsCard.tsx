@@ -1,6 +1,5 @@
 "use client";
-import { ArrowUp } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const StatsCard = ({
   stat,
@@ -11,9 +10,31 @@ const StatsCard = ({
   loading,
 }: any) => {
   const [hover, setHover] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 600);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const isLast = index === statsData.length - 1;
+
   return (
     <div
-      className={`flex-1 min-w-[220px] flex items-start justify-between p-[22px] group ${index !== statsData.length - 1 ? "border-r border-[#E5E7EB]" : ""}`}
+      className={`
+        flex-1 min-w-[220px] 
+        flex items-start justify-between p-[22px] group
+        border-[#E5E7EB]
+
+        ${!isMobile && !isLast ? "lg:border-r" : ""} 
+        ${isMobile && !isLast ? "border-b" : ""}
+      `}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
@@ -29,13 +50,14 @@ const StatsCard = ({
         <span className="text-secondary-text text-sm font-medium">
           {stat.title}
         </span>
+
         <div className="text-[28px] font-bold text-primary-text group-hover:text-[#9B6EEE] transition-all">
           {loading ? "-" : index === 0 && statsDataRes?.GDR}
           {loading ? "-" : index === 1 && statsDataRes?.NDR}
           {loading ? "-" : index === 2 && statsDataRes?.LTV}
           {loading ? "-" : index === 3 && customers}
-          {/* {stat.value} */}
         </div>
+
         <span className="text-secondary-text text-sm">
           {loading
             ? "-"
@@ -44,10 +66,6 @@ const StatsCard = ({
               : stat.label}
         </span>
       </div>
-      {/* <div className="flex items-center bg-green-50 text-green-600 rounded-lg px-2 py-1 text-xs font-medium">
-        <ArrowUp className="w-3.5 h-3.5 mr-1" />
-        {stat.growth}
-      </div> */}
     </div>
   );
 };
